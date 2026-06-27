@@ -9,6 +9,7 @@ Six live applications. Five build zones. Seven revenue streams. One operating sy
 - **Sprint 1** — Public front door: static homepage, project showcase, live app links
 - **Sprint 2** — OS Dashboard: status system, zone architecture, command center, revenue engine, roadmap
 - **Sprint 3** — Multi-page routing: six dedicated pages, shared components, layout-level nav and footer
+- **Sprint 4** — Integrations readiness: eight API integration specs with purpose, env vars, safety rules, and sprint targets
 
 ## Stack
 
@@ -27,6 +28,7 @@ Six live applications. Five build zones. Seven revenue streams. One operating sy
 | `/revenue` | Seven revenue streams with audience, income type, and how-it-earns breakdown |
 | `/roadmap` | Five-phase progression from public launch to client portal |
 | `/about` | Sahid Attaf — background, focus areas, build categories, and principles |
+| `/integrations` | Eight API integrations — purpose, env vars, safety rules, and sprint targets |
 
 ## Structure
 
@@ -47,9 +49,11 @@ components/
   section-header.tsx    — Shared section label/title/description
   page-header.tsx       — Sub-page breadcrumb + hero header
   project-card.tsx      — Project card with status/visibility/next action
+  integration-card.tsx  — Integration card with env vars, safety rule, sprint target
 data/
   projects.ts           — Project data with status, zone, tech stack
   command-center.ts     — OS dashboard, toolchain, revenue, roadmap data
+  integrations.ts       — Eight API integration specs
 ```
 
 ## Local Development

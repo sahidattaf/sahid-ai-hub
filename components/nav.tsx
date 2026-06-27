@@ -7,6 +7,7 @@ const NAV_LINKS: [string, string][] = [
   ["Command", "/command-center"],
   ["Revenue", "/revenue"],
   ["Roadmap", "/roadmap"],
+  ["APIs", "/integrations"],
   ["About", "/about"],
 ];
 
