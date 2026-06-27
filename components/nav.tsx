@@ -2,6 +2,7 @@ import Link from "next/link";
 
 const NAV_LINKS: [string, string][] = [
   ["Home", "/"],
+  ["Registry", "/registry"],
   ["Projects", "/projects"],
   ["Live Apps", "/live-apps"],
   ["GitHub", "/github"],

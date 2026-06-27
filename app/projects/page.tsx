@@ -1,42 +1,32 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/page-header";
-import ProjectCard from "@/components/project-card";
-import { PROJECTS } from "@/data/projects";
-import { ZONES } from "@/data/command-center";
+import ProjectRegistryCard from "@/components/project-registry-card";
+import { REGISTRY, ZONE_ORDER, ZONE_DESCRIPTIONS } from "@/data/project-registry";
 
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "All six live projects by Sahid Attaf — status, visibility, zone, tech stack, and next actions.",
+    "All projects by Sahid Attaf — status, visibility, zone, tech stack, and next actions. Sourced from the project registry.",
 };
-
-const ZONE_ORDER = [
-  "Proof of Work",
-  "Hospitality",
-  "Real Estate / Kai Korsou",
-  "GPT Innovation / AI Services",
-  "Infrastructure / Archive",
-];
 
 export default function ProjectsPage() {
   const byZone = ZONE_ORDER.map((zone) => ({
     zone,
-    projects: PROJECTS.filter((p) => p.zone === zone),
+    description: ZONE_DESCRIPTIONS[zone] ?? "",
+    projects: REGISTRY.filter((p) => p.zone === zone),
   })).filter(({ projects }) => projects.length > 0);
-
-  const zoneMap = Object.fromEntries(ZONES.map((z) => [z.name, z.description]));
 
   return (
     <>
       <PageHeader
         breadcrumb="Projects"
         label="All Projects"
-        title="Live Applications"
-        description="Every active project — grouped by build zone, with status, visibility, tech stack, and next action tracked per entry."
+        title="Projects"
+        description="Every active project grouped by build zone — status, visibility, tech stack, and next action tracked per entry. Sourced from the project registry."
       />
       <main className="py-16 px-6">
         <div className="max-w-6xl mx-auto space-y-20">
-          {byZone.map(({ zone, projects }) => (
+          {byZone.map(({ zone, description, projects }) => (
             <section key={zone}>
               <div
                 className="mb-8 pb-4 border-b"
@@ -54,18 +44,18 @@ export default function ProjectsPage() {
                 >
                   {zone}
                 </h2>
-                {zoneMap[zone] && (
+                {description && (
                   <p
                     className="text-sm leading-relaxed max-w-xl"
                     style={{ color: "var(--text-muted)" }}
                   >
-                    {zoneMap[zone]}
+                    {description}
                   </p>
                 )}
               </div>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {projects.map((project) => (
-                  <ProjectCard key={project.title} project={project} />
+                  <ProjectRegistryCard key={project.id} project={project} />
                 ))}
               </div>
             </section>

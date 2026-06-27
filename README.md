@@ -2,7 +2,7 @@
 
 AI Operating System dashboard and multi-page command center for everything Sahid Attaf builds with AI.
 
-Six live applications. Five build zones. Seven revenue streams. One operating system. All proof is in production.
+Ten projects. Five build zones. Seven revenue streams. One operating system. All proof is in production.
 
 ## Sprint History
 
@@ -11,6 +11,7 @@ Six live applications. Five build zones. Seven revenue streams. One operating sy
 - **Sprint 3** — Multi-page routing: six dedicated pages, shared components, layout-level nav and footer
 - **Sprint 4** — Integrations readiness: eight API integration specs with purpose, env vars, safety rules, and sprint targets
 - **Sprint 5** — Live GitHub dashboard: profile, repos, language chart, aggregate stats — server-rendered from GitHub REST API
+- **Sprint 6.1** — Project Registry foundation: `data/project-registry.ts` as single source of truth for 10 projects; `/registry` page with stats and zone-grouped cards; `/projects` and `/live-apps` updated to pull from registry
 
 ## Stack
 
@@ -23,8 +24,9 @@ Six live applications. Five build zones. Seven revenue streams. One operating sy
 | Route | Description |
 | --- | --- |
 | `/` | Executive overview — hero, stats, OS dashboard, project preview, revenue and roadmap summaries |
-| `/projects` | All six projects grouped by zone with status, visibility, and next actions |
-| `/live-apps` | Six Vercel deployments with tech stacks and direct links |
+| `/registry` | Project Registry — 10 projects, zone-grouped, with stats, stack, revenue potential, and next actions |
+| `/projects` | All projects grouped by zone — sourced from the project registry |
+| `/live-apps` | Live Vercel deployments with tech stacks and direct links — sourced from the project registry |
 | `/command-center` | Eight-tool active toolchain grouped by category |
 | `/revenue` | Seven revenue streams with audience, income type, and how-it-earns breakdown |
 | `/roadmap` | Five-phase progression from public launch to client portal |
@@ -50,7 +52,8 @@ components/
   footer.tsx            — Site footer (all pages)
   section-header.tsx    — Shared section label/title/description
   page-header.tsx       — Sub-page breadcrumb + hero header
-  project-card.tsx      — Project card with status/visibility/next action
+  project-card.tsx      — Project card with status/visibility/next action (legacy, used on homepage)
+  project-registry-card.tsx — Registry card with zone, stack, revenue potential, next action
   integration-card.tsx  — Integration card with env vars, safety rule, sprint target
   github/
     github-profile.tsx  — Avatar, bio, follower/following stats
@@ -60,7 +63,8 @@ components/
 lib/
   github.ts             — GitHub REST API fetch functions, types, utilities
 data/
-  projects.ts           — Project data with status, zone, tech stack
+  project-registry.ts   — Single source of truth for all 10 projects with full field set
+  projects.ts           — Legacy project data (used by homepage project-card)
   command-center.ts     — OS dashboard, toolchain, revenue, roadmap data
   integrations.ts       — Eight API integration specs
 ```

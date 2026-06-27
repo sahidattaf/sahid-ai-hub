@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/page-header";
-import { PROJECTS } from "@/data/projects";
+import { REGISTRY, type RegistryProject } from "@/data/project-registry";
 
 export const metadata: Metadata = {
   title: "Live Apps",
   description:
-    "Six publicly deployed Vercel applications by Sahid Attaf — direct links, tech stacks, and categories.",
+    "Publicly deployed Vercel applications by Sahid Attaf — direct links, tech stacks, and categories.",
 };
 
-const LIVE = PROJECTS.filter((p) => p.status === "Live" && p.live);
+type LiveApp = RegistryProject & { websiteUrl: string };
+const LIVE = REGISTRY.filter(
+  (p): p is LiveApp => p.status === "Live" && typeof p.websiteUrl === "string"
+);
 
 export default function LiveAppsPage() {
   return (
@@ -17,13 +20,13 @@ export default function LiveAppsPage() {
         breadcrumb="Live Apps"
         label="Vercel Deployments"
         title="Live Applications"
-        description="Six publicly accessible applications deployed on Vercel. Each is live, functional, and linked below."
+        description={`${LIVE.length} publicly accessible applications deployed on Vercel. Each is live, functional, and linked below.`}
       />
       <main className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-6">
             {LIVE.map((app, index) => (
-              <AppCard key={app.title} app={app} index={index} />
+              <AppCard key={app.id} app={app} index={index} />
             ))}
           </div>
 
@@ -55,20 +58,24 @@ export default function LiveAppsPage() {
               a production deployment with preview URLs for every pull request.
             </p>
             <div className="flex flex-wrap gap-3 mt-6">
-              {["Automated CI/CD", "Preview URLs", "Edge Network", "GitHub Integration", "Zero-downtime deploys"].map(
-                (feat) => (
-                  <span
-                    key={feat}
-                    className="text-xs px-3 py-1 rounded font-mono border"
-                    style={{
-                      borderColor: "var(--navy-border)",
-                      color: "var(--text-subtle)",
-                    }}
-                  >
-                    {feat}
-                  </span>
-                )
-              )}
+              {[
+                "Automated CI/CD",
+                "Preview URLs",
+                "Edge Network",
+                "GitHub Integration",
+                "Zero-downtime deploys",
+              ].map((feat) => (
+                <span
+                  key={feat}
+                  className="text-xs px-3 py-1 rounded font-mono border"
+                  style={{
+                    borderColor: "var(--navy-border)",
+                    color: "var(--text-subtle)",
+                  }}
+                >
+                  {feat}
+                </span>
+              ))}
             </div>
           </div>
         </div>
@@ -77,13 +84,7 @@ export default function LiveAppsPage() {
   );
 }
 
-function AppCard({
-  app,
-  index,
-}: {
-  app: (typeof LIVE)[number];
-  index: number;
-}) {
+function AppCard({ app, index }: { app: LiveApp; index: number }) {
   return (
     <div
       className="card-hover rounded-lg border p-7 flex flex-col"
@@ -94,28 +95,20 @@ function AppCard({
     >
       <div className="flex items-start justify-between gap-4 mb-5">
         <div>
-          <span
-            className="text-xs font-mono"
-            style={{ color: "var(--text-subtle)" }}
-          >
+          <span className="text-xs font-mono" style={{ color: "var(--text-subtle)" }}>
             {String(index + 1).padStart(2, "0")}
           </span>
           <h2
             className="text-lg font-semibold mt-1"
             style={{ color: "var(--text-primary)" }}
           >
-            {app.title}
+            {app.name}
           </h2>
-          <p
-            className="text-xs font-mono mt-0.5"
-            style={{ color: "var(--text-subtle)" }}
-          >
+          <p className="text-xs font-mono mt-0.5" style={{ color: "var(--text-subtle)" }}>
             {app.category}
           </p>
         </div>
-        <span
-          className="text-xs px-2 py-0.5 rounded-full font-mono flex-shrink-0 badge-live"
-        >
+        <span className="text-xs px-2 py-0.5 rounded-full font-mono flex-shrink-0 badge-live">
           Live
         </span>
       </div>
@@ -135,14 +128,11 @@ function AppCard({
           Tech Stack
         </p>
         <div className="flex flex-wrap gap-2">
-          {app.techStack.map((tech) => (
+          {app.stack.map((tech) => (
             <span
               key={tech}
               className="text-xs px-2 py-1 rounded font-mono"
-              style={{
-                backgroundColor: "var(--navy-800)",
-                color: "var(--text-subtle)",
-              }}
+              style={{ backgroundColor: "var(--navy-800)", color: "var(--text-subtle)" }}
             >
               {tech}
             </span>
@@ -155,27 +145,21 @@ function AppCard({
         style={{ borderColor: "var(--navy-border)" }}
       >
         <a
-          href={app.live}
+          href={app.websiteUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center px-4 py-2 text-xs font-medium rounded transition-all"
-          style={{
-            backgroundColor: "var(--cyan)",
-            color: "var(--navy-950)",
-          }}
+          style={{ backgroundColor: "var(--cyan)", color: "var(--navy-950)" }}
         >
           Open Live App
         </a>
-        {app.repo && (
+        {app.githubUrl && (
           <a
-            href={app.repo}
+            href={app.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-4 py-2 text-xs font-medium rounded border transition-all"
-            style={{
-              borderColor: "var(--navy-border)",
-              color: "var(--text-muted)",
-            }}
+            style={{ borderColor: "var(--navy-border)", color: "var(--text-muted)" }}
           >
             View Repository
           </a>
