@@ -1,77 +1,33 @@
-import { PROJECTS, type Status, type Visibility } from "@/data/projects";
+import Link from "next/link";
+import SectionHeader from "@/components/section-header";
+import ProjectCard from "@/components/project-card";
+import { PROJECTS } from "@/data/projects";
 import {
   OS_DASHBOARD,
-  TOOLCHAIN,
-  REVENUE_STREAMS,
-  ROADMAP,
   ZONES,
-  type RoadmapPhase,
+  ROADMAP,
+  REVENUE_STREAMS,
 } from "@/data/command-center";
 
 const STATS = [
   { value: "6", label: "Live Applications" },
-  { value: "8", label: "Revenue Streams" },
+  { value: "7", label: "Revenue Streams" },
   { value: "5", label: "Build Zones" },
   { value: "5", label: "Roadmap Phases" },
 ];
 
 export default function Home() {
   return (
-    <div
-      className="flex flex-col min-h-screen"
-      style={{ backgroundColor: "var(--navy-950)" }}
-    >
-      <Nav />
-      <main className="flex-1">
-        <HeroSection />
-        <StatsSection />
-        <OSDashboardSection />
-        <ProjectsSection />
-        <ZonesSection />
-        <CommandCenterSection />
-        <RevenueSection />
-        <RoadmapSection />
-        <ContactSection />
-      </main>
-      <Footer />
-    </div>
-  );
-}
-
-function Nav() {
-  return (
-    <header
-      className="sticky top-0 z-50 border-b"
-      style={{
-        backgroundColor: "rgba(5, 9, 26, 0.92)",
-        borderColor: "var(--navy-border)",
-        backdropFilter: "blur(12px)",
-      }}
-    >
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <span
-          className="text-base font-semibold tracking-widest uppercase"
-          style={{ color: "var(--cyan)", letterSpacing: "0.15em" }}
-        >
-          Sahid AI Hub
-        </span>
-        <nav className="hidden md:flex items-center gap-7">
-          {[
-            ["Dashboard", "#dashboard"],
-            ["Projects", "#projects"],
-            ["Zones", "#zones"],
-            ["Tools", "#command-center"],
-            ["Revenue", "#revenue"],
-            ["Roadmap", "#roadmap"],
-            ["Contact", "#contact"],
-          ].map(([label, href]) => (
-            <a key={label} href={href} className="nav-link">
-              {label}
-            </a>
-          ))}
-        </nav>
-      </div>
-    </header>
+    <>
+      <HeroSection />
+      <StatsSection />
+      <OSDashboardSection />
+      <ProjectsSection />
+      <ZonesSection />
+      <RevenuePreview />
+      <RoadmapPreview />
+      <ContactSection />
+    </>
   );
 }
 
@@ -105,23 +61,23 @@ function HeroSection() {
           operating system. All proof is in production.
         </p>
         <div className="flex flex-wrap gap-4">
-          <a
-            href="#dashboard"
+          <Link
+            href="/projects"
             className="inline-flex items-center px-6 py-3 text-sm font-medium rounded transition-all"
             style={{ backgroundColor: "var(--cyan)", color: "var(--navy-950)" }}
           >
-            Open Dashboard
-          </a>
-          <a
-            href="#projects"
+            View Projects
+          </Link>
+          <Link
+            href="/about"
             className="inline-flex items-center px-6 py-3 text-sm font-medium rounded border transition-all"
             style={{
               borderColor: "var(--navy-border)",
               color: "var(--text-muted)",
             }}
           >
-            View Projects
-          </a>
+            About Sahid
+          </Link>
           <a
             href="https://github.com/sahidattaf"
             target="_blank"
@@ -167,7 +123,6 @@ function StatsSection() {
 function OSDashboardSection() {
   return (
     <section
-      id="dashboard"
       className="py-24 px-6"
       style={{ backgroundColor: "var(--navy-900)" }}
     >
@@ -192,8 +147,7 @@ function OSDashboardSection() {
               <p
                 className="text-3xl font-bold mb-2 font-mono"
                 style={{
-                  color:
-                    card.accent === "cyan" ? "var(--cyan)" : "var(--gold)",
+                  color: card.accent === "cyan" ? "var(--cyan)" : "var(--gold)",
                 }}
               >
                 {card.count}
@@ -219,173 +173,46 @@ function OSDashboardSection() {
 }
 
 function ProjectsSection() {
+  const featured = PROJECTS.slice(0, 3);
   return (
-    <section id="projects" className="py-24 px-6">
+    <section className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          label="Featured Projects"
-          title="Live Applications"
-          description="Six deployed applications across distinct domains. Status, visibility, and next actions tracked per project."
-        />
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-12">
-          {PROJECTS.map((project) => (
-            <ProjectCard key={project.title} {...project} />
+        <div className="flex items-end justify-between mb-12">
+          <SectionHeader
+            label="Featured Projects"
+            title="Live Applications"
+            description="Six deployed applications across distinct domains. Status, visibility, and next actions tracked per project."
+          />
+          <Link
+            href="/projects"
+            className="hidden md:inline-flex text-sm font-medium flex-shrink-0 ml-8"
+            style={{ color: "var(--cyan)" }}
+          >
+            View all 6 projects
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {featured.map((project) => (
+            <ProjectCard key={project.title} project={project} />
           ))}
+        </div>
+        <div className="mt-8 md:hidden">
+          <Link
+            href="/projects"
+            className="text-sm font-medium"
+            style={{ color: "var(--cyan)" }}
+          >
+            View all 6 projects
+          </Link>
         </div>
       </div>
     </section>
   );
 }
 
-function statusClass(status: Status): string {
-  const map: Record<Status, string> = {
-    Live: "badge-live",
-    Repo: "badge-repo",
-    Prototype: "badge-prototype",
-    Planning: "badge-planning",
-  };
-  return map[status];
-}
-
-function visibilityClass(visibility: Visibility): string {
-  const map: Record<Visibility, string> = {
-    Public: "badge-public",
-    Private: "badge-private",
-    Hybrid: "badge-hybrid",
-  };
-  return map[visibility];
-}
-
-function ProjectCard({
-  title,
-  description,
-  live,
-  repo,
-  tags,
-  status,
-  visibility,
-  category,
-  nextAction,
-}: {
-  title: string;
-  description: string;
-  live?: string;
-  repo?: string;
-  tags: string[];
-  status: Status;
-  visibility: Visibility;
-  category: string;
-  zone: string;
-  nextAction: string;
-}) {
-  return (
-    <div
-      className="card-hover flex flex-col rounded-lg border p-6"
-      style={{
-        backgroundColor: "var(--navy-card)",
-        borderColor: "rgba(30, 45, 90, 0.6)",
-      }}
-    >
-      <div className="flex items-start justify-between gap-3 mb-4">
-        <h3
-          className="text-base font-semibold"
-          style={{ color: "var(--text-primary)" }}
-        >
-          {title}
-        </h3>
-        <div className="flex gap-1.5 flex-shrink-0">
-          <span
-            className={`text-xs px-2 py-0.5 rounded-full font-mono ${statusClass(status)}`}
-          >
-            {status}
-          </span>
-          <span
-            className={`text-xs px-2 py-0.5 rounded-full font-mono ${visibilityClass(visibility)}`}
-          >
-            {visibility}
-          </span>
-        </div>
-      </div>
-
-      <p
-        className="text-xs font-mono mb-3"
-        style={{ color: "var(--text-subtle)" }}
-      >
-        {category}
-      </p>
-
-      <p
-        className="text-sm leading-relaxed mb-4 flex-1"
-        style={{ color: "var(--text-muted)" }}
-      >
-        {description}
-      </p>
-
-      <div className="flex flex-wrap gap-2 mb-5">
-        {tags.map((tag) => (
-          <span
-            key={tag}
-            className="text-xs px-2 py-1 rounded font-mono"
-            style={{
-              backgroundColor: "var(--navy-800)",
-              color: "var(--text-subtle)",
-            }}
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      <div
-        className="pt-4 border-t mb-4"
-        style={{ borderColor: "var(--navy-border)" }}
-      >
-        <p
-          className="text-xs font-mono uppercase mb-1"
-          style={{ color: "var(--text-subtle)", letterSpacing: "0.1em" }}
-        >
-          Next Action
-        </p>
-        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-          {nextAction}
-        </p>
-      </div>
-
-      <div className="flex gap-3">
-        {live && (
-          <a
-            href={live}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs font-medium"
-            style={{ color: "var(--cyan)" }}
-          >
-            Live App
-          </a>
-        )}
-        {live && repo && (
-          <span style={{ color: "var(--navy-border)" }}>|</span>
-        )}
-        {repo && (
-          <a
-            href={repo}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs font-medium"
-            style={{ color: "var(--text-subtle)" }}
-          >
-            Repository
-          </a>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function ZonesSection() {
   return (
     <section
-      id="zones"
       className="py-24 px-6"
       style={{ backgroundColor: "var(--navy-900)" }}
     >
@@ -440,153 +267,134 @@ function ZonesSection() {
   );
 }
 
-function CommandCenterSection() {
+function RevenuePreview() {
   return (
-    <section id="command-center" className="py-24 px-6">
+    <section className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          label="AI Command Center"
-          title="Active Toolchain"
-          description="The eight tools forming the core operating environment for research, design, build, and deployment."
-        />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
-          {TOOLCHAIN.map(({ name, role }) => (
-            <div
-              key={name}
-              className="rounded-lg border p-5 card-hover"
-              style={{
-                backgroundColor: "var(--navy-card)",
-                borderColor: "rgba(30, 45, 90, 0.6)",
-              }}
-            >
-              <p
-                className="text-sm font-semibold mb-2"
-                style={{ color: "var(--text-primary)" }}
-              >
-                {name}
-              </p>
-              <p
-                className="text-xs leading-relaxed"
-                style={{ color: "var(--text-subtle)" }}
-              >
-                {role}
-              </p>
-            </div>
-          ))}
+        <div className="flex items-end justify-between mb-12">
+          <SectionHeader
+            label="Revenue Engine"
+            title="Commercial Offers"
+            description="Seven active revenue streams. Each maps to a real category of work."
+          />
+          <Link
+            href="/revenue"
+            className="hidden md:inline-flex text-sm font-medium flex-shrink-0 ml-8"
+            style={{ color: "var(--cyan)" }}
+          >
+            View revenue engine
+          </Link>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function RevenueSection() {
-  return (
-    <section
-      id="revenue"
-      className="py-24 px-6"
-      style={{ backgroundColor: "var(--navy-900)" }}
-    >
-      <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          label="Revenue Engine"
-          title="Commercial Offers"
-          description="Seven active revenue streams. Each maps to a real category of work that clients and partners engage with directly."
-        />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-12">
-          {REVENUE_STREAMS.map(({ name, description }, index) => (
-            <div
+        <ul className="space-y-3 max-w-2xl">
+          {REVENUE_STREAMS.map(({ name, incomeType }, index) => (
+            <li
               key={name}
-              className="rounded-lg border p-6 card-hover"
-              style={{
-                backgroundColor: "var(--navy-card)",
-                borderColor: "rgba(30, 45, 90, 0.6)",
-              }}
+              className="flex items-center justify-between py-3 border-b"
+              style={{ borderColor: "var(--navy-border)" }}
             >
-              <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center gap-4">
                 <span
-                  className="text-xs font-mono"
+                  className="text-xs font-mono w-6"
                   style={{ color: "var(--gold)" }}
                 >
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <h3
-                  className="text-sm font-semibold"
+                <span
+                  className="text-sm font-medium"
                   style={{ color: "var(--text-primary)" }}
                 >
                   {name}
-                </h3>
+                </span>
               </div>
-              <p
-                className="text-sm leading-relaxed"
-                style={{ color: "var(--text-muted)" }}
+              <span
+                className="text-xs font-mono px-2 py-0.5 rounded"
+                style={{
+                  backgroundColor: "var(--navy-800)",
+                  color: "var(--text-subtle)",
+                }}
               >
-                {description}
-              </p>
-            </div>
+                {incomeType}
+              </span>
+            </li>
           ))}
+        </ul>
+        <div className="mt-8 md:hidden">
+          <Link
+            href="/revenue"
+            className="text-sm font-medium"
+            style={{ color: "var(--cyan)" }}
+          >
+            View revenue engine
+          </Link>
         </div>
       </div>
     </section>
   );
 }
 
-function phaseStatusClass(status: RoadmapPhase["status"]): string {
-  const map: Record<RoadmapPhase["status"], string> = {
-    Complete: "phase-complete",
-    Active: "phase-active",
-    Planned: "phase-planned",
-  };
-  return map[status];
-}
-
-function RoadmapSection() {
+function RoadmapPreview() {
   return (
-    <section id="roadmap" className="py-24 px-6">
+    <section
+      className="py-24 px-6 border-t section-divider"
+      style={{ backgroundColor: "var(--navy-900)" }}
+    >
       <div className="max-w-6xl mx-auto">
-        <SectionHeader
-          label="Roadmap"
-          title="Build Progression"
-          description="Five phases from public launch to a fully live AI-powered command center."
-        />
-        <div className="mt-12 space-y-4">
-          {ROADMAP.map(({ phase, title, description, status }) => (
-            <div
-              key={phase}
-              className="rounded-lg border p-6 card-hover flex flex-col sm:flex-row sm:items-start gap-4"
-              style={{
-                backgroundColor: "var(--navy-card)",
-                borderColor: "rgba(30, 45, 90, 0.6)",
-              }}
-            >
-              <div className="flex-shrink-0 sm:w-32">
-                <p
-                  className="text-xs font-mono uppercase mb-2"
-                  style={{ color: "var(--text-subtle)", letterSpacing: "0.1em" }}
+        <div className="flex items-end justify-between mb-12">
+          <SectionHeader
+            label="Roadmap"
+            title="Build Progression"
+            description="Five phases from public launch to a fully live AI-powered command center."
+          />
+          <Link
+            href="/roadmap"
+            className="hidden md:inline-flex text-sm font-medium flex-shrink-0 ml-8"
+            style={{ color: "var(--cyan)" }}
+          >
+            View full roadmap
+          </Link>
+        </div>
+        <div className="space-y-3">
+          {ROADMAP.map(({ phase, title, status }) => {
+            const statusStyles: Record<string, string> = {
+              Complete: "phase-complete",
+              Active: "phase-active",
+              Planned: "phase-planned",
+            };
+            return (
+              <div
+                key={phase}
+                className="flex items-center gap-4 py-3 border-b"
+                style={{ borderColor: "var(--navy-border)" }}
+              >
+                <span
+                  className="text-xs font-mono w-16 flex-shrink-0"
+                  style={{ color: "var(--text-subtle)" }}
                 >
                   {phase}
-                </p>
+                </span>
                 <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-mono ${phaseStatusClass(status)}`}
+                  className="text-sm font-medium flex-1"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {title}
+                </span>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full font-mono flex-shrink-0 ${statusStyles[status]}`}
                 >
                   {status}
                 </span>
               </div>
-              <div>
-                <h3
-                  className="text-sm font-semibold mb-2"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  {title}
-                </h3>
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: "var(--text-muted)" }}
-                >
-                  {description}
-                </p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
+        </div>
+        <div className="mt-8 md:hidden">
+          <Link
+            href="/roadmap"
+            className="text-sm font-medium"
+            style={{ color: "var(--cyan)" }}
+          >
+            View full roadmap
+          </Link>
         </div>
       </div>
     </section>
@@ -595,7 +403,7 @@ function RoadmapSection() {
 
 function ContactSection() {
   return (
-    <section id="contact" className="py-24 px-6">
+    <section className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
         <div
           className="rounded-lg border p-10 md:p-16 text-center"
@@ -650,77 +458,5 @@ function ContactSection() {
         </div>
       </div>
     </section>
-  );
-}
-
-function SectionHeader({
-  label,
-  title,
-  description,
-}: {
-  label: string;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="max-w-xl">
-      <p
-        className="text-xs font-mono tracking-widest uppercase mb-3"
-        style={{ color: "var(--cyan)", letterSpacing: "0.2em" }}
-      >
-        {label}
-      </p>
-      <h2
-        className="text-2xl md:text-3xl font-bold mb-3"
-        style={{ color: "var(--text-primary)" }}
-      >
-        {title}
-      </h2>
-      <p
-        className="text-sm leading-relaxed"
-        style={{ color: "var(--text-muted)" }}
-      >
-        {description}
-      </p>
-    </div>
-  );
-}
-
-function Footer() {
-  return (
-    <footer
-      className="py-8 px-6 border-t section-divider"
-      style={{ backgroundColor: "var(--navy-900)" }}
-    >
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <span
-          className="text-sm font-mono"
-          style={{ color: "var(--text-subtle)" }}
-        >
-          Sahid AI Hub
-        </span>
-        <p className="text-xs" style={{ color: "var(--text-subtle)" }}>
-          Built with Next.js, TypeScript, and Tailwind CSS. Deployed on Vercel.
-        </p>
-        <div className="flex gap-6">
-          <a
-            href="https://github.com/sahidattaf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs footer-link transition-colors"
-            style={{ color: "var(--text-subtle)" }}
-          >
-            GitHub
-          </a>
-          <a
-            href="mailto:sahidattaf@gmail.com"
-            className="text-xs footer-link transition-colors"
-            style={{ color: "var(--text-subtle)" }}
-          >
-            Email
-          </a>
-        </div>
-      </div>
-    </footer>
   );
 }

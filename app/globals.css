@@ -147,3 +147,19 @@ body {
 .os-card-gold {
   border-top: 2px solid var(--gold);
 }
+
+/* Page-level utilities */
+.page-section {
+  padding: 4rem 1.5rem;
+}
+
+.text-link {
+  color: var(--cyan);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: opacity 0.15s ease;
+}
+
+.text-link:hover {
+  opacity: 0.8;
+}

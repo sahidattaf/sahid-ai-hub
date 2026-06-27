@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Nav from "@/components/nav";
+import Footer from "@/components/footer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,7 +15,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sahid AI Hub | AI command center",
+  title: {
+    default: "Sahid AI Hub | AI command center",
+    template: "%s | Sahid AI Hub",
+  },
   description:
     "The public front door to Sahid Attaf's AI projects, live apps, repositories, hospitality systems, real estate intelligence, and proof-of-work prototypes.",
   openGraph: {
@@ -34,7 +39,11 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-screen flex flex-col">
+        <Nav />
+        <div className="flex-1">{children}</div>
+        <Footer />
+      </body>
     </html>
   );
 }

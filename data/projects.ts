@@ -12,6 +12,7 @@ export interface Project {
   category: string;
   zone: string;
   nextAction: string;
+  techStack: string[];
 }
 
 export const PROJECTS: Project[] = [
@@ -27,6 +28,7 @@ export const PROJECTS: Project[] = [
     category: "Career Tech",
     zone: "Proof of Work",
     nextAction: "Add AI resume builder module",
+    techStack: ["Next.js", "OpenAI API", "TypeScript", "Vercel"],
   },
   {
     title: "BOSSA Asado i Mar",
@@ -40,6 +42,7 @@ export const PROJECTS: Project[] = [
     category: "Hospitality Brand",
     zone: "Hospitality",
     nextAction: "Integrate online reservation system",
+    techStack: ["Next.js", "Tailwind CSS", "TypeScript", "Vercel"],
   },
   {
     title: "BOSSA AI OS",
@@ -53,6 +56,7 @@ export const PROJECTS: Project[] = [
     category: "AI Operating System",
     zone: "Hospitality",
     nextAction: "Build POS intelligence layer",
+    techStack: ["Next.js", "OpenAI API", "Supabase", "Vercel"],
   },
   {
     title: "GPT OS Website",
@@ -66,6 +70,7 @@ export const PROJECTS: Project[] = [
     category: "Platform Engineering",
     zone: "GPT Innovation / AI Services",
     nextAction: "Launch shared API gateway",
+    techStack: ["Turborepo", "Next.js", "TypeScript", "Vercel"],
   },
   {
     title: "Piskadera Marketplace",
@@ -79,6 +84,7 @@ export const PROJECTS: Project[] = [
     category: "Local Commerce",
     zone: "Real Estate / Kai Korsou",
     nextAction: "Build vendor self-service dashboard",
+    techStack: ["Next.js", "Tailwind CSS", "TypeScript", "Vercel"],
   },
   {
     title: "AI Marketing Tools",
@@ -92,5 +98,6 @@ export const PROJECTS: Project[] = [
     category: "Marketing Automation",
     zone: "GPT Innovation / AI Services",
     nextAction: "Add campaign analytics dashboard",
+    techStack: ["Next.js", "OpenAI API", "TypeScript", "Vercel"],
   },
 ];

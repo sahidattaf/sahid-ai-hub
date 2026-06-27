@@ -1,6 +1,6 @@
 # Sahid AI Hub
 
-AI Operating System dashboard and public command center for everything Sahid Attaf builds with AI.
+AI Operating System dashboard and multi-page command center for everything Sahid Attaf builds with AI.
 
 Six live applications. Five build zones. Seven revenue streams. One operating system. All proof is in production.
 
@@ -8,6 +8,7 @@ Six live applications. Five build zones. Seven revenue streams. One operating sy
 
 - **Sprint 1** — Public front door: static homepage, project showcase, live app links
 - **Sprint 2** — OS Dashboard: status system, zone architecture, command center, revenue engine, roadmap
+- **Sprint 3** — Multi-page routing: six dedicated pages, shared components, layout-level nav and footer
 
 ## Stack
 
@@ -15,16 +16,40 @@ Six live applications. Five build zones. Seven revenue streams. One operating sy
 - **Styling:** Tailwind CSS v4
 - **Deployment:** Vercel
 
+## Routes
+
+| Route | Description |
+| --- | --- |
+| `/` | Executive overview — hero, stats, OS dashboard, project preview, revenue and roadmap summaries |
+| `/projects` | All six projects grouped by zone with status, visibility, and next actions |
+| `/live-apps` | Six Vercel deployments with tech stacks and direct links |
+| `/command-center` | Eight-tool active toolchain grouped by category |
+| `/revenue` | Seven revenue streams with audience, income type, and how-it-earns breakdown |
+| `/roadmap` | Five-phase progression from public launch to client portal |
+| `/about` | Sahid Attaf — background, focus areas, build categories, and principles |
+
 ## Structure
 
 ```text
 app/
-  page.tsx        — Homepage with all dashboard sections
-  layout.tsx      — Root layout and metadata
-  globals.css     — Design tokens, badge styles, utilities
+  page.tsx              — Homepage (executive overview)
+  layout.tsx            — Root layout with shared Nav and Footer
+  globals.css           — Design tokens, badge styles, utilities
+  projects/page.tsx     — All projects grouped by zone
+  live-apps/page.tsx    — Vercel deployments with tech stacks
+  command-center/page.tsx — Active toolchain by category
+  revenue/page.tsx      — Revenue streams with income breakdown
+  roadmap/page.tsx      — Five-phase build progression
+  about/page.tsx        — Builder background and principles
+components/
+  nav.tsx               — Sticky top navigation (all pages)
+  footer.tsx            — Site footer (all pages)
+  section-header.tsx    — Shared section label/title/description
+  page-header.tsx       — Sub-page breadcrumb + hero header
+  project-card.tsx      — Project card with status/visibility/next action
 data/
-  projects.ts     — Project data with status, visibility, zones, next actions
-  command-center.ts — OS dashboard, toolchain, revenue, roadmap data
+  projects.ts           — Project data with status, zone, tech stack
+  command-center.ts     — OS dashboard, toolchain, revenue, roadmap data
 ```
 
 ## Local Development
@@ -53,14 +78,6 @@ npm run build
 | GPT OS Website | [Live](https://gpt-os-website.vercel.app/) | [Repo](https://github.com/sahidattaf/gpt-innovation-os) | GPT Innovation |
 | Piskadera Marketplace | [Live](https://piskadera-marketplace.vercel.app/) | [Repo](https://github.com/sahidattaf/kai-korsou-command-center) | Real Estate / Kai Korsou |
 | AI Marketing Tools | [Live](https://ai-marketing-tools-six.vercel.app/) | [Repo](https://github.com/sahidattaf/ai_-marketing-_tools-_agent) | GPT Innovation |
-
-## Roadmap
-
-- Phase 1: Public Front Door — Complete
-- Phase 2: Project Dashboard — Active
-- Phase 3: Live Integrations — Planned
-- Phase 4: AI Assistant — Planned
-- Phase 5: Client / Investor Portal — Planned
 
 ## Contact
 
