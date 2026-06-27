@@ -6,6 +6,7 @@ const NAV_LINKS: [string, string][] = [
   ["Projects", "/projects"],
   ["Live Apps", "/live-apps"],
   ["GitHub", "/github"],
+  ["Vercel", "/vercel"],
   ["Command", "/command-center"],
   ["Revenue", "/revenue"],
   ["Roadmap", "/roadmap"],
