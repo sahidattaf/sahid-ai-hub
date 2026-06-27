@@ -75,3 +75,75 @@ body {
 .section-divider {
   border-color: var(--navy-border);
 }
+
+/* Status badges */
+.badge-live {
+  background-color: rgba(34, 211, 238, 0.12);
+  color: var(--cyan);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+}
+
+.badge-repo {
+  background-color: rgba(100, 116, 139, 0.12);
+  color: var(--text-subtle);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+.badge-prototype {
+  background-color: rgba(212, 168, 67, 0.12);
+  color: var(--gold);
+  border: 1px solid rgba(212, 168, 67, 0.25);
+}
+
+.badge-planning {
+  background-color: rgba(13, 21, 64, 0.6);
+  color: var(--text-subtle);
+  border: 1px solid var(--navy-border);
+}
+
+/* Visibility badges */
+.badge-public {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.badge-private {
+  background-color: rgba(239, 68, 68, 0.08);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+.badge-hybrid {
+  background-color: rgba(212, 168, 67, 0.1);
+  color: var(--gold);
+  border: 1px solid rgba(212, 168, 67, 0.2);
+}
+
+/* Roadmap phase status */
+.phase-complete {
+  background-color: rgba(34, 211, 238, 0.12);
+  color: var(--cyan);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+}
+
+.phase-active {
+  background-color: rgba(212, 168, 67, 0.12);
+  color: var(--gold);
+  border: 1px solid rgba(212, 168, 67, 0.25);
+}
+
+.phase-planned {
+  background-color: rgba(100, 116, 139, 0.08);
+  color: var(--text-subtle);
+  border: 1px solid rgba(100, 116, 139, 0.15);
+}
+
+/* OS Dashboard card accent lines */
+.os-card-cyan {
+  border-top: 2px solid var(--cyan);
+}
+
+.os-card-gold {
+  border-top: 2px solid var(--gold);
+}
