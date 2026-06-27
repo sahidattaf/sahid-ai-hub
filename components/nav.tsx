@@ -4,6 +4,7 @@ const NAV_LINKS: [string, string][] = [
   ["Home", "/"],
   ["Projects", "/projects"],
   ["Live Apps", "/live-apps"],
+  ["GitHub", "/github"],
   ["Command", "/command-center"],
   ["Revenue", "/revenue"],
   ["Roadmap", "/roadmap"],
