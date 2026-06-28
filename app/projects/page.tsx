@@ -55,7 +55,11 @@ export default function ProjectsPage() {
               </div>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {projects.map((project) => (
-                  <ProjectRegistryCard key={project.id} project={project} />
+                  <ProjectRegistryCard
+                    key={project.id}
+                    project={project}
+                    detailHref={`/projects/${project.id}`}
+                  />
                 ))}
               </div>
             </section>

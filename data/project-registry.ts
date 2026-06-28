@@ -227,10 +227,20 @@ export const REGISTRY: RegistryProject[] = [
     owner: "Sahid Attaf",
     priority: "High",
     revenuePotential: "Portfolio",
-    nextAction: "Deploy Sprint 6 project registry",
+    nextAction: "Build project detail pages and executive OS modules",
     tags: ["Dashboard", "AI OS", "Infrastructure"],
   },
 ];
+
+export function computeHealthScore(project: RegistryProject): number {
+  let score = 0;
+  if (project.websiteUrl) score += 20;
+  if (project.githubUrl) score += 20;
+  if (project.status === "Live") score += 20;
+  if (project.priority === "High") score += 20;
+  if (project.nextAction) score += 20;
+  return Math.min(score, 100);
+}
 
 export function getRegistryStats() {
   return {

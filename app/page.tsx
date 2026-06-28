@@ -8,6 +8,7 @@ import {
   ROADMAP,
   REVENUE_STREAMS,
 } from "@/data/command-center";
+import { EXECUTIVE_MODULES, CATEGORY_ORDER } from "@/data/executive-modules";
 
 const STATS = [
   { value: "6", label: "Live Applications" },
@@ -26,6 +27,7 @@ export default function Home() {
       <ZonesSection />
       <RevenuePreview />
       <RoadmapPreview />
+      <ExecutiveOSSection />
       <ContactSection />
     </>
   );
@@ -395,6 +397,124 @@ function RoadmapPreview() {
           >
             View full roadmap
           </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ExecutiveOSSection() {
+  const active = EXECUTIVE_MODULES.filter((m) => m.status === "Active").length;
+  const planned = EXECUTIVE_MODULES.filter((m) => m.status === "Planned").length;
+  const future = EXECUTIVE_MODULES.filter((m) => m.status === "Future").length;
+
+  const quickLinks = [
+    { label: "Projects",  href: "/projects",  accent: "cyan" as const },
+    { label: "Registry",  href: "/registry",  accent: "gold" as const },
+    { label: "GitHub",    href: "/github",    accent: "muted" as const },
+    { label: "Vercel",    href: "/vercel",    accent: "muted" as const },
+    { label: "Live Apps", href: "/live-apps", accent: "cyan" as const },
+  ];
+
+  return (
+    <section className="py-24 px-6 border-t section-divider">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-end justify-between mb-12">
+          <SectionHeader
+            label="Executive OS"
+            title="Operating System"
+            description={`${EXECUTIVE_MODULES.length} modules across ${CATEGORY_ORDER.length} categories — ${active} active, ${planned} planned, ${future} future.`}
+          />
+          <Link
+            href="/projects"
+            className="hidden md:inline-flex text-sm font-medium flex-shrink-0 ml-8"
+            style={{ color: "var(--cyan)" }}
+          >
+            View projects
+          </Link>
+        </div>
+
+        {/* Quick nav */}
+        <div className="flex flex-wrap gap-3 mb-10">
+          {quickLinks.map(({ label, href, accent }) => (
+            <Link
+              key={href}
+              href={href}
+              className="inline-flex items-center px-4 py-2 text-xs font-medium rounded border transition-all card-hover"
+              style={{
+                borderColor:
+                  accent === "cyan"
+                    ? "rgba(34, 211, 238, 0.3)"
+                    : accent === "gold"
+                    ? "rgba(212, 168, 67, 0.3)"
+                    : "var(--navy-border)",
+                color:
+                  accent === "cyan"
+                    ? "var(--cyan)"
+                    : accent === "gold"
+                    ? "var(--gold)"
+                    : "var(--text-muted)",
+                backgroundColor: "var(--navy-card)",
+              }}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Module grid — show Active modules prominently */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {EXECUTIVE_MODULES.filter((m) => m.status !== "Future")
+            .slice(0, 8)
+            .map((mod) => (
+              <div
+                key={mod.id}
+                className={`rounded-lg border p-4 ${mod.href ? "card-hover" : ""}`}
+                style={{
+                  backgroundColor: "var(--navy-card)",
+                  borderColor:
+                    mod.status === "Active"
+                      ? "rgba(34, 211, 238, 0.15)"
+                      : "rgba(30, 45, 90, 0.6)",
+                }}
+              >
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <p
+                    className="text-sm font-semibold"
+                    style={{
+                      color:
+                        mod.status === "Active"
+                          ? "var(--text-primary)"
+                          : "var(--text-muted)",
+                    }}
+                  >
+                    {mod.name}
+                  </p>
+                  <span
+                    className={`text-xs px-1.5 py-0.5 rounded-full font-mono flex-shrink-0 ${
+                      mod.status === "Active" ? "badge-live" : "badge-prototype"
+                    }`}
+                  >
+                    {mod.status}
+                  </span>
+                </div>
+                <p
+                  className="text-xs leading-relaxed"
+                  style={{ color: "var(--text-subtle)" }}
+                >
+                  {mod.description}
+                </p>
+                {mod.href && (
+                  <Link
+                    href={mod.href}
+                    className="inline-block mt-3 text-xs"
+                    style={{ color: "var(--cyan)" }}
+                  >
+                    Open →
+                  </Link>
+                )}
+              </div>
+            ))}
         </div>
       </div>
     </section>

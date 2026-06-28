@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { RegistryProject, Status, Visibility, RevenuePotential } from "@/data/project-registry";
 
 function statusClass(status: Status): string {
@@ -30,7 +31,13 @@ function revenueColor(r: RevenuePotential): string {
   return map[r];
 }
 
-export default function ProjectRegistryCard({ project }: { project: RegistryProject }) {
+export default function ProjectRegistryCard({
+  project,
+  detailHref,
+}: {
+  project: RegistryProject;
+  detailHref?: string;
+}) {
   const {
     name,
     zone,
@@ -153,7 +160,7 @@ export default function ProjectRegistryCard({ project }: { project: RegistryProj
         </p>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         {websiteUrl && (
           <a
             href={websiteUrl}
@@ -178,6 +185,18 @@ export default function ProjectRegistryCard({ project }: { project: RegistryProj
           >
             Repository
           </a>
+        )}
+        {detailHref && (websiteUrl || githubUrl) && (
+          <span style={{ color: "var(--navy-border)" }}>|</span>
+        )}
+        {detailHref && (
+          <Link
+            href={detailHref}
+            className="text-xs font-medium"
+            style={{ color: "var(--gold)" }}
+          >
+            Details →
+          </Link>
         )}
       </div>
     </div>
