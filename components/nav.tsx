@@ -1,4 +1,5 @@
 import Link from "next/link";
+import NavSearchButton from "@/components/nav-search-button";
 
 const NAV_LINKS: [string, string][] = [
   ["Home", "/"],
@@ -32,12 +33,13 @@ export default function Nav() {
         >
           Sahid AI Hub
         </Link>
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-4">
           {NAV_LINKS.map(([label, href]) => (
             <Link key={label} href={href} className="nav-link">
               {label}
             </Link>
           ))}
+          <NavSearchButton />
         </nav>
       </div>
     </header>

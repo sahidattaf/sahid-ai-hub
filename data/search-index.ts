@@ -1,0 +1,468 @@
+export type SearchCategory =
+  | "Projects"
+  | "Pages"
+  | "Modules"
+  | "GitHub"
+  | "Vercel"
+  | "Revenue"
+  | "Roadmap"
+  | "AI Agents";
+
+export interface SearchItem {
+  id: string;
+  title: string;
+  category: SearchCategory;
+  description: string;
+  url: string;
+  icon: string;
+  keywords: string[];
+  recent?: boolean;
+  favorite?: boolean;
+}
+
+export const SEARCH_INDEX: SearchItem[] = [
+  // === PAGES ===
+  {
+    id: "page-home",
+    title: "Dashboard",
+    category: "Pages",
+    description: "Executive dashboard — projects, KPIs, and live activity",
+    url: "/",
+    icon: "⚡",
+    keywords: ["home", "dashboard", "command", "center", "overview", "executive"],
+    favorite: true,
+  },
+  {
+    id: "page-projects",
+    title: "Projects",
+    category: "Pages",
+    description: "Full project registry grouped by zone and status",
+    url: "/projects",
+    icon: "📁",
+    keywords: ["projects", "registry", "apps", "portfolio"],
+    favorite: true,
+  },
+  {
+    id: "page-registry",
+    title: "Registry",
+    category: "Pages",
+    description: "Structured project registry with health scores and metadata",
+    url: "/registry",
+    icon: "📋",
+    keywords: ["registry", "projects", "list", "health", "status"],
+  },
+  {
+    id: "page-github",
+    title: "GitHub",
+    category: "Pages",
+    description: "Live GitHub dashboard — repos, commits, and language breakdown",
+    url: "/github",
+    icon: "🐙",
+    keywords: ["github", "repos", "code", "repositories", "commits", "ci"],
+    favorite: true,
+  },
+  {
+    id: "page-vercel",
+    title: "Vercel",
+    category: "Pages",
+    description: "Live deployment dashboard — build status and history per project",
+    url: "/vercel",
+    icon: "▲",
+    keywords: ["vercel", "deployments", "builds", "hosting", "deploy"],
+    favorite: true,
+  },
+  {
+    id: "page-live-apps",
+    title: "Live Apps",
+    category: "Pages",
+    description: "All live deployed applications running in production",
+    url: "/live-apps",
+    icon: "🚀",
+    keywords: ["live", "apps", "deployed", "running", "production"],
+  },
+  {
+    id: "page-revenue",
+    title: "Revenue",
+    category: "Pages",
+    description: "Revenue streams, projections, and financial intelligence",
+    url: "/revenue",
+    icon: "💰",
+    keywords: ["revenue", "money", "income", "finance", "mrr", "arr", "saas"],
+    favorite: true,
+  },
+  {
+    id: "page-roadmap",
+    title: "Roadmap",
+    category: "Pages",
+    description: "Build roadmap — phases, milestones, and next actions",
+    url: "/roadmap",
+    icon: "🗺️",
+    keywords: ["roadmap", "phases", "plan", "milestones", "timeline", "sprint"],
+    favorite: true,
+  },
+  {
+    id: "page-command",
+    title: "Command Center",
+    category: "Pages",
+    description: "Executive OS — modules, toolchain, and OS overview",
+    url: "/command-center",
+    icon: "🎯",
+    keywords: ["command", "center", "os", "executive", "modules", "toolchain"],
+  },
+  {
+    id: "page-integrations",
+    title: "Integrations",
+    category: "Pages",
+    description: "API integrations readiness and connection status map",
+    url: "/integrations",
+    icon: "🔌",
+    keywords: ["integrations", "api", "connections", "webhooks", "apis"],
+  },
+  {
+    id: "page-about",
+    title: "About",
+    category: "Pages",
+    description: "About Sahid Attaf and the Sahid AI Hub mission",
+    url: "/about",
+    icon: "👤",
+    keywords: ["about", "sahid", "bio", "mission", "profile"],
+  },
+
+  // === PROJECTS ===
+  {
+    id: "proj-jobhunter",
+    title: "JobHunterGPT",
+    category: "Projects",
+    description: "AI-powered job search assistant — matching, tracking, career intelligence",
+    url: "/projects/jobhunter-gpt",
+    icon: "💼",
+    keywords: ["job", "career", "gpt", "resume", "search", "automation", "hunting"],
+    favorite: true,
+  },
+  {
+    id: "proj-bossa-brand",
+    title: "BOSSA Asado i Mar",
+    category: "Projects",
+    description: "Premium hospitality brand site with reservation flows and AI guest experience",
+    url: "/projects/bossa-asado-i-mar",
+    icon: "🍽️",
+    keywords: ["bossa", "restaurant", "hospitality", "brand", "reservations", "asado"],
+  },
+  {
+    id: "proj-bossa-os",
+    title: "BOSSA AI OS",
+    category: "Projects",
+    description: "AI operating system for hospitality management, menu intelligence, and automation",
+    url: "/projects/bossa-ai-os",
+    icon: "🏨",
+    keywords: ["bossa", "ai", "os", "hospitality", "menu", "management", "automation"],
+  },
+  {
+    id: "proj-hospitality-os",
+    title: "Hospitality OS",
+    category: "Projects",
+    description: "Universal hospitality OS — multi-property management and AI scheduling",
+    url: "/projects/hospitality-os",
+    icon: "🏩",
+    keywords: ["hospitality", "os", "multi-property", "hotels", "staff", "scheduling"],
+  },
+  {
+    id: "proj-kai-korsou",
+    title: "Kai Kòrsou Command Center",
+    category: "Projects",
+    description: "AI command center for the Curacao real estate and tourism ecosystem",
+    url: "/projects/kai-korsou-command-center",
+    icon: "🏝️",
+    keywords: ["kai", "korsou", "curacao", "real estate", "tourism", "command", "curaçao"],
+  },
+  {
+    id: "proj-piskadera",
+    title: "Piskadera Marketplace",
+    category: "Projects",
+    description: "Digital marketplace for the Curacao fishing and local goods ecosystem",
+    url: "/projects/piskadera-marketplace",
+    icon: "🐟",
+    keywords: ["piskadera", "piska", "marketplace", "curacao", "fishing", "ecommerce", "local"],
+  },
+  {
+    id: "proj-gpt-os",
+    title: "GPT Innovation OS",
+    category: "Projects",
+    description: "Turborepo monorepo powering a multi-app AI ecosystem",
+    url: "/projects/gpt-innovation-os",
+    icon: "⚙️",
+    keywords: ["gpt", "innovation", "monorepo", "turborepo", "platform", "ecosystem"],
+  },
+  {
+    id: "proj-ai-marketing",
+    title: "AI Marketing Tools",
+    category: "Projects",
+    description: "AI-powered content generation, campaign orchestration, and analytics",
+    url: "/projects/ai-marketing-tools",
+    icon: "📣",
+    keywords: ["marketing", "ai", "content", "campaigns", "analytics", "tools"],
+  },
+  {
+    id: "proj-dreamscape",
+    title: "Dreamscape",
+    category: "Projects",
+    description: "AI creative studio for generative narratives and interactive fiction",
+    url: "/projects/dreamscape",
+    icon: "✨",
+    keywords: ["dreamscape", "creative", "ai", "narrative", "fiction", "storytelling", "generative"],
+  },
+  {
+    id: "proj-ghost-reit",
+    title: "Ghost REIT",
+    category: "Projects",
+    description: "AI-powered real estate investment trust management and portfolio intelligence",
+    url: "/projects",
+    icon: "🏦",
+    keywords: ["ghost", "reit", "real estate", "investment", "trust", "portfolio", "property"],
+  },
+  {
+    id: "proj-digital-korsou",
+    title: "Digital Kòrsou",
+    category: "Projects",
+    description: "Digital ecosystem and economy platform for the island of Curaçao",
+    url: "/projects",
+    icon: "🌴",
+    keywords: ["digital", "korsou", "curacao", "curaçao", "ecosystem", "economy", "island"],
+  },
+  {
+    id: "proj-sahid-ai-hub",
+    title: "Sahid AI Hub",
+    category: "Projects",
+    description: "Multi-page AI OS command center — registry, dashboards, and intelligence",
+    url: "/projects/sahid-ai-hub",
+    icon: "🌐",
+    keywords: ["sahid", "ai", "hub", "infrastructure", "command", "center", "os"],
+  },
+
+  // === MODULES ===
+  {
+    id: "mod-analytics",
+    title: "Analytics",
+    category: "Modules",
+    description: "Cross-platform traffic, deployment frequency, and revenue trends",
+    url: "/vercel",
+    icon: "📈",
+    keywords: ["analytics", "traffic", "trends", "metrics", "data"],
+  },
+  {
+    id: "mod-hospitality",
+    title: "Hospitality Module",
+    category: "Modules",
+    description: "AI-powered multi-property hospitality management and scheduling",
+    url: "/projects",
+    icon: "🏨",
+    keywords: ["hospitality", "hotel", "restaurant", "management", "staff"],
+  },
+  {
+    id: "mod-real-estate",
+    title: "Real Estate Module",
+    category: "Modules",
+    description: "Curacao property intelligence and Kai Kòrsou marketplace",
+    url: "/projects",
+    icon: "🏘️",
+    keywords: ["real", "estate", "property", "curacao", "listings", "market"],
+  },
+  {
+    id: "mod-knowledge",
+    title: "Knowledge Base",
+    category: "Modules",
+    description: "Searchable knowledge graph — project notes, decisions, and references",
+    url: "/command-center",
+    icon: "🧠",
+    keywords: ["knowledge", "notes", "decisions", "reference", "search", "graph"],
+  },
+  {
+    id: "mod-automation",
+    title: "Automation",
+    category: "Modules",
+    description: "Trigger-based workflow automation linking AI agents and business processes",
+    url: "/command-center",
+    icon: "⚡",
+    keywords: ["automation", "workflows", "triggers", "agents", "events"],
+  },
+  {
+    id: "mod-crm",
+    title: "CRM",
+    category: "Modules",
+    description: "Customer and prospect relationship management across all projects",
+    url: "/command-center",
+    icon: "👥",
+    keywords: ["crm", "customers", "prospects", "contacts", "deals", "relationships"],
+  },
+  {
+    id: "mod-documents",
+    title: "Documents",
+    category: "Modules",
+    description: "Contracts, SOPs, brand guidelines, and structured reference documents",
+    url: "/command-center",
+    icon: "📄",
+    keywords: ["documents", "contracts", "sop", "brand", "guidelines", "reference"],
+  },
+  {
+    id: "mod-notion",
+    title: "Notion Workspace",
+    category: "Modules",
+    description: "Connected Notion workspace — documents, SOPs, and brand guides",
+    url: "/integrations",
+    icon: "📝",
+    keywords: ["notion", "documents", "sop", "notes", "workspace", "wiki"],
+  },
+  {
+    id: "mod-claude-design",
+    title: "Claude Design",
+    category: "Modules",
+    description: "AI-assisted design and creative direction powered by Claude",
+    url: "/integrations",
+    icon: "🎨",
+    keywords: ["claude", "design", "ai", "creative", "anthropic", "visual"],
+  },
+  {
+    id: "mod-supabase",
+    title: "Supabase",
+    category: "Modules",
+    description: "Database health, query performance, and storage across all projects",
+    url: "/command-center",
+    icon: "🗄️",
+    keywords: ["supabase", "database", "sql", "storage", "backend", "postgres"],
+  },
+
+  // === AI AGENTS ===
+  {
+    id: "agent-registry",
+    title: "AI Agents Registry",
+    category: "AI Agents",
+    description: "Registry and monitoring panel for all deployed AI agents",
+    url: "/command-center",
+    icon: "🤖",
+    keywords: ["ai", "agents", "bots", "automation", "registry", "monitor", "llm"],
+  },
+  {
+    id: "agent-jobhunter",
+    title: "JobHunter Agent",
+    category: "AI Agents",
+    description: "AI agent powering job search automation and career matching",
+    url: "/projects/jobhunter-gpt",
+    icon: "🤖",
+    keywords: ["agent", "jobhunter", "career", "automation", "gpt", "matching"],
+  },
+  {
+    id: "agent-marketing",
+    title: "Marketing Agent",
+    category: "AI Agents",
+    description: "AI agent for content generation and campaign orchestration",
+    url: "/projects/ai-marketing-tools",
+    icon: "🤖",
+    keywords: ["agent", "marketing", "content", "campaigns", "automation", "ai"],
+  },
+
+  // === GITHUB ===
+  {
+    id: "github-dashboard",
+    title: "GitHub Dashboard",
+    category: "GitHub",
+    description: "Live GitHub stats — repo health, commits, languages, and CI",
+    url: "/github",
+    icon: "🐙",
+    keywords: ["github", "repos", "code", "ci", "commits", "languages", "pull requests"],
+  },
+
+  // === VERCEL ===
+  {
+    id: "vercel-dashboard",
+    title: "Vercel Dashboard",
+    category: "Vercel",
+    description: "Deployment health and build history across all Vercel projects",
+    url: "/vercel",
+    icon: "▲",
+    keywords: ["vercel", "deploy", "build", "hosting", "edge", "serverless"],
+  },
+
+  // === REVENUE ===
+  {
+    id: "rev-streams",
+    title: "Revenue Streams",
+    category: "Revenue",
+    description: "Active and projected revenue across all business units",
+    url: "/revenue",
+    icon: "💰",
+    keywords: ["revenue", "streams", "mrr", "arr", "income", "money"],
+  },
+  {
+    id: "rev-saas",
+    title: "SaaS Revenue",
+    category: "Revenue",
+    description: "JobHunterGPT, BOSSA AI OS, AI Marketing Tools subscriptions",
+    url: "/revenue",
+    icon: "📊",
+    keywords: ["saas", "subscriptions", "recurring", "revenue", "mrr"],
+  },
+  {
+    id: "rev-consulting",
+    title: "Consulting Revenue",
+    category: "Revenue",
+    description: "Client projects and AI consulting engagements",
+    url: "/revenue",
+    icon: "💼",
+    keywords: ["consulting", "clients", "projects", "services", "revenue"],
+  },
+
+  // === ROADMAP ===
+  {
+    id: "road-phases",
+    title: "Build Roadmap",
+    category: "Roadmap",
+    description: "5-phase build plan from foundation to AI monetization",
+    url: "/roadmap",
+    icon: "🗺️",
+    keywords: ["roadmap", "phases", "milestones", "plan", "timeline", "build"],
+  },
+  {
+    id: "road-current",
+    title: "Current Sprint",
+    category: "Roadmap",
+    description: "Active sprint goals and in-progress deliverables",
+    url: "/roadmap",
+    icon: "🏃",
+    keywords: ["sprint", "current", "active", "now", "today", "progress"],
+  },
+  {
+    id: "road-documentation",
+    title: "Documentation",
+    category: "Roadmap",
+    description: "Technical docs, SOPs, and architecture references",
+    url: "/roadmap",
+    icon: "📚",
+    keywords: ["documentation", "docs", "technical", "sop", "architecture", "reference"],
+  },
+];
+
+export const CATEGORY_ICONS: Record<string, string> = {
+  Projects: "📁",
+  Pages: "🗂️",
+  Modules: "🧩",
+  GitHub: "🐙",
+  Vercel: "▲",
+  Revenue: "💰",
+  Roadmap: "🗺️",
+  "AI Agents": "🤖",
+};
+
+export const CATEGORY_ORDER: string[] = [
+  "Pages",
+  "Projects",
+  "AI Agents",
+  "Modules",
+  "GitHub",
+  "Vercel",
+  "Revenue",
+  "Roadmap",
+];
+
+export const DEFAULT_ITEMS: SearchItem[] = SEARCH_INDEX.filter(
+  (item) => item.favorite,
+);
