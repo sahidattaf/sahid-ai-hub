@@ -1,3 +1,4 @@
+<img width="1265" height="1200" alt="image" src="https://github.com/user-attachments/assets/8feae620-80bc-4c54-a167-6dfad5dc516a" />
 # Sahid AI Hub
 
 AI Operating System dashboard and multi-page command center for everything Sahid Attaf builds with AI.
