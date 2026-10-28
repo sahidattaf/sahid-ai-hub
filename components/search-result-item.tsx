@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { SearchItem } from "@/data/search-index";
+import { SearchItem } from "@/lib/search-config";
 
 interface Props {
   item: SearchItem;

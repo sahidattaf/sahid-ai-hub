@@ -10,7 +10,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { search, groupByCategory } from "@/lib/search";
-import { DEFAULT_ITEMS, type SearchItem } from "@/data/search-index";
+import type { SearchItem } from "@/lib/search-config";
 import SearchResultItem from "@/components/search-result-item";
 import SearchGroup from "@/components/search-group";
 import KeyboardShortcuts from "@/components/keyboard-shortcuts";
@@ -21,7 +21,8 @@ const SHORTCUTS = [
   { keys: ["Esc"], label: "close" },
 ];
 
-function CommandPalette() {
+function CommandPalette({ items }: { items: SearchItem[] }) {
+  const DEFAULT_ITEMS = useMemo(() => items.filter((i) => i.favorite), [items]);
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
   const [query, setQuery] = useState("");
@@ -33,13 +34,13 @@ function CommandPalette() {
 
   const results = useMemo<SearchItem[]>(() => {
     if (!query.trim()) return DEFAULT_ITEMS;
-    return search(query);
-  }, [query]);
+    return search(query, items);
+  }, [query, items, DEFAULT_ITEMS]);
 
   const grouped = useMemo<Map<string, SearchItem[]>>(() => {
     if (!query.trim()) return new Map([["Quick Access", DEFAULT_ITEMS]]);
     return groupByCategory(results);
-  }, [results, query]);
+  }, [results, query, DEFAULT_ITEMS]);
 
   const closePalette = useCallback(() => {
     setVisible(false);

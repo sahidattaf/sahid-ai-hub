@@ -1,4 +1,4 @@
-import { SearchItem, SEARCH_INDEX, CATEGORY_ORDER } from "@/data/search-index";
+import { CATEGORY_ORDER, type SearchItem } from "@/lib/search-config";
 
 function normalize(str: string): string {
   return str.toLowerCase().trim();
@@ -58,10 +58,10 @@ function scoreItem(item: SearchItem, query: string): number {
   return score;
 }
 
-export function search(query: string): SearchItem[] {
+export function search(query: string, index: SearchItem[]): SearchItem[] {
   if (!query.trim()) return [];
 
-  const results: Array<{ item: SearchItem; score: number }> = SEARCH_INDEX.map(
+  const results: Array<{ item: SearchItem; score: number }> = index.map(
     (item) => ({ item, score: scoreItem(item, query) }),
   ).filter((r) => r.score > 0);
 

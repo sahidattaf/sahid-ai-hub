@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { CATEGORY_ICONS } from "@/data/search-index";
+import { CATEGORY_ICONS } from "@/lib/search-config";
 
 interface Props {
   category: string;

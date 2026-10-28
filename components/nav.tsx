@@ -3,16 +3,12 @@ import NavSearchButton from "@/components/nav-search-button";
 
 const NAV_LINKS: [string, string][] = [
   ["Home", "/"],
-  ["Registry", "/registry"],
   ["Projects", "/projects"],
   ["Live Apps", "/live-apps"],
-  ["GitHub", "/github"],
-  ["Vercel", "/vercel"],
   ["Command", "/command-center"],
-  ["Revenue", "/revenue"],
   ["Roadmap", "/roadmap"],
-  ["APIs", "/integrations"],
   ["About", "/about"],
+  ["Dashboard", "/dashboard"],
 ];
 
 export default function Nav() {
@@ -33,7 +29,7 @@ export default function Nav() {
         >
           Sahid AI Hub
         </Link>
-        <nav className="hidden md:flex items-center gap-4">
+        <nav aria-label="Primary" className="hidden md:flex items-center gap-4">
           {NAV_LINKS.map(([label, href]) => (
             <Link key={label} href={href} className="nav-link">
               {label}
@@ -41,6 +37,26 @@ export default function Nav() {
           ))}
           <NavSearchButton />
         </nav>
+        {/* Mobile: native <details> keeps the menu keyboard accessible without client JS. */}
+        <details className="md:hidden relative">
+          <summary
+            className="list-none cursor-pointer px-3 py-2 text-sm rounded border"
+            style={{ borderColor: "var(--navy-border)", color: "var(--text-muted)" }}
+          >
+            Menu
+          </summary>
+          <nav
+            aria-label="Primary mobile"
+            className="absolute right-0 mt-2 w-48 rounded border p-2 flex flex-col"
+            style={{ backgroundColor: "var(--navy-card)", borderColor: "var(--navy-border)" }}
+          >
+            {NAV_LINKS.map(([label, href]) => (
+              <Link key={label} href={href} className="nav-link px-3 py-2">
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </details>
       </div>
     </header>
   );

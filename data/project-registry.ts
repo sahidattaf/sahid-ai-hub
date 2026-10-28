@@ -1,3 +1,5 @@
+import "server-only";
+
 export type Status = "Live" | "Repo" | "Prototype" | "Planning";
 export type Visibility = "Public" | "Private" | "Hybrid";
 export type Priority = "P0" | "P1" | "P2" | "P3";
@@ -124,4 +126,125 @@ export function getRegistryStats() {
     p0p1: REGISTRY.filter((p) => p.priority === "P0" || p.priority === "P1").length,
     needsEvidence: REGISTRY.filter((p) => p.evidenceStatus !== "Verified").length,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Selectors. Every project list, count and integration target in the app is
+// derived from REGISTRY; do not define project data anywhere else.
+// ---------------------------------------------------------------------------
+
+/** Only `Public` is explicitly public; `Hybrid` and `Private` are owner-only. */
+export function isPublicProject(project: RegistryProject): boolean {
+  return project.visibility === "Public";
+}
+
+/**
+ * Fields that are safe to render on public pages and to serialise to the
+ * browser. Deliberately excludes Notion links, owner gates, decisions, next
+ * actions, commercial/revenue classification, evidence status and related
+ * (possibly private or legacy) repositories.
+ */
+export interface PublicProject {
+  id: string;
+  name: string;
+  zone: string;
+  assetType: AssetType;
+  status: Status;
+  description: string;
+  websiteUrl?: string;
+  githubUrl?: string;
+  category: string;
+  stack: string[];
+  tags: string[];
+}
+
+export function toPublicProject(project: RegistryProject): PublicProject {
+  return {
+    id: project.id,
+    name: project.name,
+    zone: project.zone,
+    assetType: project.assetType,
+    status: project.status,
+    description: project.description,
+    websiteUrl: project.websiteUrl,
+    githubUrl: project.githubUrl,
+    category: project.category,
+    stack: [...project.stack],
+    tags: [...project.tags],
+  };
+}
+
+export function getPublicProjects(projects: RegistryProject[] = REGISTRY): PublicProject[] {
+  return projects.filter(isPublicProject).map(toPublicProject);
+}
+
+export function getPublicProjectById(id: string, projects: RegistryProject[] = REGISTRY): PublicProject | undefined {
+  const project = projects.find((p) => p.id === id);
+  return project && isPublicProject(project) ? toPublicProject(project) : undefined;
+}
+
+export interface ZoneSummary {
+  zone: string;
+  description: string;
+  count: number;
+}
+
+export function getZoneSummaries(projects: { zone: string }[]): ZoneSummary[] {
+  return ZONE_ORDER.map((zone) => ({
+    zone,
+    description: ZONE_DESCRIPTIONS[zone] ?? "",
+    count: projects.filter((p) => p.zone === zone).length,
+  })).filter((z) => z.count > 0);
+}
+
+/** Projects that declare a production URL. This is a claim, not a health check. */
+export function getDeclaredLiveApps<T extends { websiteUrl?: string }>(projects: T[]): (T & { websiteUrl: string })[] {
+  return projects.filter((p): p is T & { websiteUrl: string } => typeof p.websiteUrl === "string");
+}
+
+export interface GithubTarget {
+  projectId: string;
+  projectName: string;
+  owner: string;
+  repo: string;
+  url: string;
+  declaredVisibility: Visibility;
+}
+
+export function parseGithubRepo(url: string | undefined): { owner: string; repo: string } | null {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname !== "github.com") return null;
+    const [owner, repo] = parsed.pathname.split("/").filter(Boolean);
+    return owner && repo ? { owner, repo: repo.replace(/\.git$/, "") } : null;
+  } catch {
+    return null;
+  }
+}
+
+export function getGithubTargets(projects: RegistryProject[] = REGISTRY): GithubTarget[] {
+  const targets: GithubTarget[] = [];
+  for (const project of projects) {
+    const parsed = parseGithubRepo(project.githubUrl);
+    if (parsed && project.githubUrl) targets.push({ projectId: project.id, projectName: project.name, ...parsed, url: project.githubUrl, declaredVisibility: project.visibility });
+  }
+  return targets;
+}
+
+export interface VercelTarget {
+  projectId: string;
+  projectName: string;
+  vercelProject: string;
+  declaredUrl?: string;
+}
+
+export function getVercelTargets(projects: RegistryProject[] = REGISTRY): VercelTarget[] {
+  return projects
+    .filter((p): p is RegistryProject & { vercelProject: string } => Boolean(p.vercelProject))
+    .map((p) => ({ projectId: p.id, projectName: p.name, vercelProject: p.vercelProject, declaredUrl: p.websiteUrl }));
+}
+
+export function getProjectsByZones(zones: string[], projects: RegistryProject[] = REGISTRY): RegistryProject[] {
+  return projects.filter((p) => zones.includes(p.zone));
 }

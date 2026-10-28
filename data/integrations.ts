@@ -18,8 +18,8 @@ export const INTEGRATIONS: Integration[] = [
   {
     name: "GitHub API",
     category: "Data",
-    status: "Planned",
-    privacy: "Public",
+    status: "Active",
+    privacy: "Private",
     purpose:
       "Fetch live repository stats — star counts, fork counts, last commit timestamps, and open issue totals — to surface real-time project health on the projects dashboard.",
     futureData: [
@@ -38,7 +38,7 @@ export const INTEGRATIONS: Integration[] = [
   {
     name: "Vercel API",
     category: "Ops",
-    status: "Planned",
+    status: "Active",
     privacy: "Private",
     purpose:
       "Pull live deployment status, last deployment timestamp, and preview URLs for each project — showing real deployment health rather than static labels.",
@@ -57,7 +57,7 @@ export const INTEGRATIONS: Integration[] = [
   {
     name: "Notion API",
     category: "Data",
-    status: "Planned",
+    status: "Active",
     privacy: "Private",
     purpose:
       "Surface sanitized command center data — roadmap status updates, project notes, and planning summaries — without exposing internal workspace links or private content.",
@@ -67,7 +67,7 @@ export const INTEGRATIONS: Integration[] = [
       "Last edited timestamps",
       "Public-approved summary blocks",
     ],
-    envVars: ["NOTION_TOKEN", "NOTION_DATABASE_ID"],
+    envVars: ["NOTION_TOKEN", "NOTION_DATA_SOURCE_IDS", "NOTION_PAGE_IDS"],
     safetyRule:
       "Only expose pre-approved, explicitly public-safe fields. Never render raw Notion page content, block content, or workspace URLs on the public site. Map data to a safe schema before rendering.",
     sprintTarget: "Phase 3 — Sprint 6",

@@ -1,10 +1,3 @@
-export interface OSDashboardCard {
-  title: string;
-  count: string;
-  description: string;
-  accent: "cyan" | "gold";
-}
-
 export type ToolCategory = "AI" | "Design" | "Dev" | "Ops";
 
 export interface Tool {
@@ -31,63 +24,6 @@ export interface RoadmapPhase {
   status: "Complete" | "Active" | "Planned";
   deliverables: string[];
 }
-
-export interface Zone {
-  name: string;
-  description: string;
-  count: string;
-}
-
-export const OS_DASHBOARD: OSDashboardCard[] = [
-  {
-    title: "Live Apps",
-    count: "6",
-    description: "Deployed, publicly accessible Next.js applications on Vercel.",
-    accent: "cyan",
-  },
-  {
-    title: "GitHub Repositories",
-    count: "6",
-    description: "Open-source repositories under sahidattaf, all public.",
-    accent: "cyan",
-  },
-  {
-    title: "Vercel Deployments",
-    count: "6",
-    description: "Production deployments with automated CI/CD pipelines.",
-    accent: "cyan",
-  },
-  {
-    title: "Notion Command Centers",
-    count: "3",
-    description: "Internal planning hubs, operational dashboards, and strategy maps.",
-    accent: "gold",
-  },
-  {
-    title: "Claude Design Systems",
-    count: "2",
-    description: "UI design systems and component libraries built with Claude.",
-    accent: "gold",
-  },
-  {
-    title: "Spark Prototypes",
-    count: "4",
-    description: "Rapid prototypes and validated concept builds in Spark.",
-    accent: "gold",
-  },
-  {
-    title: "AI Agents / GPTs",
-    count: "3",
-    description: "Custom GPT systems and automation agents deployed for specific domains.",
-    accent: "cyan",
-  },
-  {
-    title: "Revenue Engine",
-    count: "7",
-    description: "Active revenue streams and packaged commercial offers.",
-    accent: "gold",
-  },
-];
 
 export const TOOLCHAIN: Tool[] = [
   {
@@ -281,35 +217,3 @@ export const ROADMAP: RoadmapPhase[] = [
   },
 ];
 
-export const ZONES: Zone[] = [
-  {
-    name: "Proof of Work",
-    description:
-      "Publicly deployed applications and repositories that demonstrate real capability. Every item here is live, functional, and verifiable.",
-    count: "6",
-  },
-  {
-    name: "Hospitality",
-    description:
-      "AI systems built for food, beverage, and guest experience — brand sites, operating systems, and intelligence layers for the hospitality industry.",
-    count: "2",
-  },
-  {
-    name: "Real Estate / Kai Korsou",
-    description:
-      "Property intelligence tools, local commerce infrastructure, and digital ecosystem builds for the Curacao market.",
-    count: "1",
-  },
-  {
-    name: "GPT Innovation / AI Services",
-    description:
-      "Custom GPT systems, AI marketing platforms, and multi-app AI ecosystems offered as commercial services.",
-    count: "2",
-  },
-  {
-    name: "Infrastructure / Archive",
-    description:
-      "Platform engineering, monorepo architecture, deployment infrastructure, and foundational systems that power every other zone.",
-    count: "1",
-  },
-];
