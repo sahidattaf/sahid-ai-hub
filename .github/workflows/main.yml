@@ -23,8 +23,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Remove stale build output
+        # tsconfig includes .next/**; make sure the typecheck never sees output
+        # from an earlier build (for example one restored from a cache).
+        run: rm -rf .next
+
       - name: Lint
         run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Client-term scan not run in CI
+        # The scan in tests/public-data.test.mjs only runs when LEAK_TERMS_FILE
+        # points to a private terms file. No such file or secret is configured
+        # here, so that test is skipped in CI. Run it locally before every release.
+        run: echo "::warning title=Client-term scan skipped::LEAK_TERMS_FILE is not configured in CI, so the client-term scan did not run. Run it locally before every release."
 
       - name: Build
         run: npm run build
