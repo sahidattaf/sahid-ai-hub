@@ -29,7 +29,6 @@ export default function ProjectCard({ project }: { project: Project }) {
     status,
     visibility,
     category,
-    nextAction,
   } = project;
 
   return (
@@ -88,21 +87,6 @@ export default function ProjectCard({ project }: { project: Project }) {
             {tag}
           </span>
         ))}
-      </div>
-
-      <div
-        className="pt-4 border-t mb-4"
-        style={{ borderColor: "var(--navy-border)" }}
-      >
-        <p
-          className="text-xs font-mono uppercase mb-1"
-          style={{ color: "var(--text-subtle)", letterSpacing: "0.1em" }}
-        >
-          Next Action
-        </p>
-        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-          {nextAction}
-        </p>
       </div>
 
       <div className="flex gap-3">
