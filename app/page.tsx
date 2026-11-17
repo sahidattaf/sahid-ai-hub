@@ -1,21 +1,34 @@
 import Link from "next/link";
 import SectionHeader from "@/components/section-header";
 import ProjectCard from "@/components/project-card";
-import { PROJECTS } from "@/data/projects";
-import {
-  OS_DASHBOARD,
-  ZONES,
-  ROADMAP,
-  REVENUE_STREAMS,
-} from "@/data/command-center";
+import { getProjects } from "@/data/projects";
+import { ROADMAP, SERVICES } from "@/data/command-center";
 import { EXECUTIVE_MODULES, CATEGORY_ORDER } from "@/data/executive-modules";
+import { ZONE_DESCRIPTIONS, ZONE_ORDER, getPublicProjects, getPublicStats } from "@/data/public-projects";
+
+// Every number on this page is derived from the public allowlist, so the page
+// can never claim more (or different) projects than the registry publishes.
+const PUBLIC_STATS = getPublicStats();
 
 const STATS = [
-  { value: "6", label: "Live Applications" },
-  { value: "7", label: "Revenue Streams" },
-  { value: "5", label: "Build Zones" },
-  { value: "5", label: "Roadmap Phases" },
+  { value: String(PUBLIC_STATS.liveApps), label: "Live Applications" },
+  { value: String(PUBLIC_STATS.total), label: "Public Projects" },
+  { value: String(PUBLIC_STATS.zones), label: "Build Zones" },
+  { value: String(ROADMAP.length), label: "Roadmap Phases" },
 ];
+
+const OS_CARDS = [
+  { title: "Live Apps", count: String(PUBLIC_STATS.liveApps), description: "Publicly accessible applications deployed on Vercel.", accent: "cyan" },
+  { title: "GitHub Repositories", count: String(PUBLIC_STATS.repositories), description: "Public repositories under sahidattaf.", accent: "cyan" },
+  { title: "Public Projects", count: String(PUBLIC_STATS.total), description: "Projects published in the registry, grouped by zone.", accent: "gold" },
+  { title: "Services", count: String(SERVICES.length), description: "AI services offered: websites, GPTs, support and training.", accent: "gold" },
+] as const;
+
+const ZONE_CARDS = ZONE_ORDER.map((name) => ({
+  name,
+  description: ZONE_DESCRIPTIONS[name] ?? "",
+  count: String(getPublicProjects().filter((p) => p.zone === name).length),
+})).filter((z) => z.count !== "0");
 
 export default function Home() {
   return (
@@ -59,7 +72,7 @@ function HeroSection() {
           className="text-base max-w-xl mb-12"
           style={{ color: "var(--text-subtle)", lineHeight: "1.7" }}
         >
-          Six live applications. Five build zones. Seven revenue streams. One
+          {PUBLIC_STATS.liveApps} live applications. {PUBLIC_STATS.zones} build zones. {SERVICES.length} services. One
           operating system. All proof is in production.
         </p>
         <div className="flex flex-wrap gap-4">
@@ -135,7 +148,7 @@ function OSDashboardSection() {
           description="A live map of every system, tool, and output in the Sahid AI Hub operating environment."
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
-          {OS_DASHBOARD.map((card) => (
+          {OS_CARDS.map((card) => (
             <div
               key={card.title}
               className={`card-hover rounded-lg border p-5 ${
@@ -174,8 +187,8 @@ function OSDashboardSection() {
   );
 }
 
-function ProjectsSection() {
-  const featured = PROJECTS.slice(0, 3);
+async function ProjectsSection() {
+  const featured = (await getProjects()).slice(0, 3);
   return (
     <section className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
@@ -183,14 +196,14 @@ function ProjectsSection() {
           <SectionHeader
             label="Featured Projects"
             title="Live Applications"
-            description="Six deployed applications across distinct domains. Status, visibility, and next actions tracked per project."
+            description="Deployed applications across distinct domains, with status and links per project."
           />
           <Link
             href="/projects"
             className="hidden md:inline-flex text-sm font-medium flex-shrink-0 ml-8"
             style={{ color: "var(--cyan)" }}
           >
-            View all 6 projects
+            View all {PUBLIC_STATS.total} projects
           </Link>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -204,7 +217,7 @@ function ProjectsSection() {
             className="text-sm font-medium"
             style={{ color: "var(--cyan)" }}
           >
-            View all 6 projects
+            View all {PUBLIC_STATS.total} projects
           </Link>
         </div>
       </div>
@@ -222,10 +235,10 @@ function ZonesSection() {
         <SectionHeader
           label="Project Zones"
           title="Domain Architecture"
-          description="Five zones organizing every project, system, and initiative by industry and function."
+          description="Zones organizing every public project by industry and function."
         />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-12">
-          {ZONES.map(({ name, description, count }) => (
+          {ZONE_CARDS.map(({ name, description, count }) => (
             <div
               key={name}
               className="rounded-lg border p-6 card-hover"
@@ -275,58 +288,37 @@ function RevenuePreview() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-end justify-between mb-12">
           <SectionHeader
-            label="Revenue Engine"
-            title="Commercial Offers"
-            description="Seven active revenue streams. Each maps to a real category of work."
+            label="Services"
+            title="What I Offer"
+            description="AI services across web, GPT systems, support, hospitality and training."
           />
           <Link
             href="/revenue"
             className="hidden md:inline-flex text-sm font-medium flex-shrink-0 ml-8"
             style={{ color: "var(--cyan)" }}
           >
-            View revenue engine
+            View services
           </Link>
         </div>
         <ul className="space-y-3 max-w-2xl">
-          {REVENUE_STREAMS.map(({ name, incomeType }, index) => (
+          {SERVICES.map(({ name }, index) => (
             <li
               key={name}
-              className="flex items-center justify-between py-3 border-b"
+              className="flex items-center gap-4 py-3 border-b"
               style={{ borderColor: "var(--navy-border)" }}
             >
-              <div className="flex items-center gap-4">
-                <span
-                  className="text-xs font-mono w-6"
-                  style={{ color: "var(--gold)" }}
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span
-                  className="text-sm font-medium"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  {name}
-                </span>
-              </div>
-              <span
-                className="text-xs font-mono px-2 py-0.5 rounded"
-                style={{
-                  backgroundColor: "var(--navy-800)",
-                  color: "var(--text-subtle)",
-                }}
-              >
-                {incomeType}
+              <span className="text-xs font-mono w-6" style={{ color: "var(--gold)" }}>
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+                {name}
               </span>
             </li>
           ))}
         </ul>
         <div className="mt-8 md:hidden">
-          <Link
-            href="/revenue"
-            className="text-sm font-medium"
-            style={{ color: "var(--cyan)" }}
-          >
-            View revenue engine
+          <Link href="/revenue" className="text-sm font-medium" style={{ color: "var(--cyan)" }}>
+            View services
           </Link>
         </div>
       </div>

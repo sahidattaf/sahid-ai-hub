@@ -9,7 +9,7 @@ const NAV_LINKS: [string, string][] = [
   ["GitHub", "/github"],
   ["Vercel", "/vercel"],
   ["Command", "/command-center"],
-  ["Revenue", "/revenue"],
+  ["Services", "/revenue"],
   ["Roadmap", "/roadmap"],
   ["APIs", "/integrations"],
   ["About", "/about"],

@@ -1,0 +1,127 @@
+{
+  "public": [
+    {
+      "id": "gpt-innovation-os",
+      "name": "GPT Innovation by Attaf",
+      "zone": "AI Business",
+      "assetType": "Venture",
+      "status": "Live",
+      "description": "Commercial AI services and product platform.",
+      "websiteUrl": "https://gpt-os-website.vercel.app/",
+      "githubUrl": "https://github.com/sahidattaf/gpt-innovation-os",
+      "category": "AI Business",
+      "stack": ["Next.js", "TypeScript", "Vercel"],
+      "tags": ["AI", "Hospitality", "Commercialization"]
+    },
+    {
+      "id": "ai-marketing-tools",
+      "name": "AI Marketing Tools",
+      "zone": "AI Business",
+      "assetType": "Product",
+      "status": "Repo",
+      "description": "AI-powered marketing platform.",
+      "githubUrl": "https://github.com/sahidattaf/AI-Marketing-Tools-Agent",
+      "category": "Marketing AI",
+      "stack": ["React", "React Native", "Flask", "AI"],
+      "tags": ["Marketing", "AI", "GPT Innovation"]
+    },
+    {
+      "id": "bossa-asado-i-mar",
+      "name": "BOSSA Asado i Mar",
+      "zone": "Hospitality",
+      "assetType": "Venture",
+      "status": "Live",
+      "description": "Operating fire-grill hospitality business.",
+      "websiteUrl": "https://bossa-asado-i-mar.vercel.app/",
+      "githubUrl": "https://github.com/sahidattaf/BOSSA-ASADO-I-MAR",
+      "category": "Hospitality Business",
+      "stack": ["Next.js", "TypeScript", "Vercel"],
+      "tags": ["Hospitality", "Restaurant", "Proof"]
+    },
+    {
+      "id": "bossa-ai-os",
+      "name": "BOSSA AI OS",
+      "zone": "Hospitality",
+      "assetType": "Product",
+      "status": "Live",
+      "description": "AI operating layer for menu intelligence and business automation.",
+      "websiteUrl": "https://bossa-ai-os.vercel.app/",
+      "githubUrl": "https://github.com/sahidattaf/bossa-ai-os",
+      "category": "AI Operating System",
+      "stack": ["Next.js", "TypeScript", "Vercel"],
+      "tags": ["BOSSA", "Hospitality", "AI OS"]
+    },
+    {
+      "id": "digital-korsou",
+      "name": "Digital Kòrsou — Boske di AI",
+      "zone": "Digital & Education",
+      "assetType": "Venture",
+      "status": "Prototype",
+      "description": "AI education and workforce/community pilot program.",
+      "githubUrl": "https://github.com/sahidattaf/digital-korsou-boske-ai",
+      "category": "AI Education",
+      "stack": ["GitHub", "Notion", "AI Education"],
+      "tags": ["Education", "Curaçao", "AI"]
+    },
+    {
+      "id": "ai-weekly-news",
+      "name": "AI Weekly News",
+      "zone": "AI Business",
+      "assetType": "Media Workstream",
+      "status": "Planning",
+      "description": "AI news and media workstream.",
+      "category": "AI Media",
+      "stack": ["YouTube", "Notion"],
+      "tags": ["Media", "YouTube", "AI News"]
+    },
+    {
+      "id": "reflexhon-global",
+      "name": "Reflexhon Global",
+      "zone": "Digital & Education",
+      "assetType": "Venture",
+      "status": "Repo",
+      "description": "Digital platform initiative.",
+      "githubUrl": "https://github.com/sahidattaf/reflexhon-global",
+      "category": "Digital Platform",
+      "stack": ["GitHub"],
+      "tags": ["Digital", "Platform"]
+    },
+    {
+      "id": "sahid-ai-hub",
+      "name": "Sahid AI Hub",
+      "zone": "Infrastructure",
+      "assetType": "Infrastructure",
+      "status": "Live",
+      "description": "Portfolio site and technical dashboard connecting projects, repositories and deployments.",
+      "githubUrl": "https://github.com/sahidattaf/sahid-ai-hub",
+      "category": "Portfolio Infrastructure",
+      "stack": ["Next.js 16", "TypeScript", "Tailwind CSS v4", "Vercel"],
+      "tags": ["Portfolio", "Registry", "Infrastructure"]
+    },
+    {
+      "id": "jobhunter-gpt",
+      "name": "JobHunterGPT",
+      "zone": "Incubator & Proof",
+      "assetType": "Product",
+      "status": "Live",
+      "description": "AI job-search product.",
+      "websiteUrl": "https://jobhunter-gpt-gamma.vercel.app/",
+      "githubUrl": "https://github.com/sahidattaf/jobhunter-gpt",
+      "category": "Career Tech",
+      "stack": ["Next.js", "TypeScript", "Vercel"],
+      "tags": ["GPT", "Career", "Proof"]
+    },
+    {
+      "id": "dreamscape",
+      "name": "Dreamscape",
+      "zone": "Incubator & Proof",
+      "assetType": "Research",
+      "status": "Repo",
+      "description": "Creative AI research project.",
+      "githubUrl": "https://github.com/sahidattaf/dreamscape",
+      "category": "Creative AI",
+      "stack": ["GitHub"],
+      "tags": ["R&D", "Creative AI"]
+    }
+  ]
+}

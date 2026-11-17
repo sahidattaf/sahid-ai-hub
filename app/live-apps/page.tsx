@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/page-header";
-import { REGISTRY, type RegistryProject } from "@/data/project-registry";
+import { getDeclaredLiveApps, type PublicProject } from "@/data/public-projects";
 
 export const metadata: Metadata = {
   title: "Live Apps",
@@ -8,10 +8,8 @@ export const metadata: Metadata = {
     "Publicly deployed Vercel applications by Sahid Attaf — direct links, tech stacks, and categories.",
 };
 
-type LiveApp = RegistryProject & { websiteUrl: string };
-const LIVE = REGISTRY.filter(
-  (p): p is LiveApp => p.status === "Live" && typeof p.websiteUrl === "string"
-);
+type LiveApp = PublicProject & { websiteUrl: string };
+const LIVE = getDeclaredLiveApps();
 
 export default function LiveAppsPage() {
   return (

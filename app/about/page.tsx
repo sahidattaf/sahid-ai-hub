@@ -22,7 +22,7 @@ const WHAT_I_BUILD = [
   {
     title: "Commerce Platforms",
     description:
-      "Digital marketplaces and e-commerce infrastructure for local and regional ecosystems, starting with the Curacao market.",
+      "Digital platforms and e-commerce infrastructure for local and regional ecosystems.",
   },
   {
     title: "GPT Systems and Agents",
@@ -74,14 +74,14 @@ export default function AboutPage() {
                     not demos or portfolios for their own sake.
                   </p>
                   <p>
-                    The work spans six live applications, five industry zones, and
-                    seven commercial revenue streams. Every project is publicly
-                    deployed and verifiable. All code is open source on GitHub.
+                    The work spans live applications across several industry zones.
+                    Every project listed here is publicly deployed and
+                    verifiable, with code on GitHub.
                   </p>
                   <p>
                     The focus is on markets that are underserved by off-the-shelf
-                    software: Caribbean hospitality, local commerce, emerging
-                    market real estate, and small business automation.
+                    software: Caribbean hospitality, local commerce, and small
+                    business automation.
                   </p>
                 </div>
               </div>
@@ -217,8 +217,8 @@ export default function AboutPage() {
                 style={{ color: "var(--text-muted)" }}
               >
                 Available for AI system builds, hospitality tech, marketplace
-                platforms, and training engagements. See the full revenue model
-                for engagement options.
+                platforms, and training engagements. See the services page
+                for what is offered.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <a
@@ -239,7 +239,7 @@ export default function AboutPage() {
                     color: "var(--text-muted)",
                   }}
                 >
-                  View Revenue Engine
+                  View Services
                 </Link>
                 <a
                   href="https://github.com/sahidattaf"
