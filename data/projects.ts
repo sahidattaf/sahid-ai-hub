@@ -1,3 +1,4 @@
+import "server-only";
 import { unstable_cache } from "next/cache";
 import { getPublicProjectById, getPublicProjects, type PublicProject } from "@/data/public-projects";
 
@@ -132,9 +133,9 @@ function readEnv(): NotionEnv {
 // ---------------------------------------------------------------------------
 
 type Json = Record<string, unknown>;
-const isObj = (v: unknown): v is Json => typeof v === "object" && v !== null && !Array.isArray(v);
+export const isObj = (v: unknown): v is Json => typeof v === "object" && v !== null && !Array.isArray(v);
 
-function richText(prop: unknown): string {
+export function richText(prop: unknown): string {
   if (!isObj(prop)) return "";
   const parts = Array.isArray(prop.title) ? prop.title : Array.isArray(prop.rich_text) ? prop.rich_text : [];
   return parts
@@ -143,7 +144,7 @@ function richText(prop: unknown): string {
     .trim();
 }
 
-function selectName(prop: unknown): string {
+export function selectName(prop: unknown): string {
   return isObj(prop) && isObj(prop.select) && typeof prop.select.name === "string" ? prop.select.name : "";
 }
 
@@ -168,7 +169,7 @@ export function parseRow(page: unknown): RegistryRow | null {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-async function notionQuery(env: NotionEnv, cursor?: string): Promise<Json> {
+async function notionQuery(env: NotionEnv, cursor?: string, slug?: string): Promise<Json> {
   let lastError: unknown;
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
@@ -182,7 +183,7 @@ async function notionQuery(env: NotionEnv, cursor?: string): Promise<Json> {
         body: JSON.stringify({
           page_size: 100,
           ...(cursor ? { start_cursor: cursor } : {}),
-          filter: { property: PROP.slug, rich_text: { is_not_empty: true } },
+          filter: { property: PROP.slug, rich_text: slug ? { equals: slug } : { is_not_empty: true } },
         }),
         // Caching is handled once, around the whole fetch (see loadFromNotion),
         // so a partial/failed run is never persisted page-by-page.
@@ -213,17 +214,21 @@ async function notionQuery(env: NotionEnv, cursor?: string): Promise<Json> {
   throw lastError;
 }
 
-async function fetchRegistryRows(env: NotionEnv): Promise<RegistryRow[]> {
-  const rows: RegistryRow[] = [];
+export async function readRegistryRows<T>(parse: (page: unknown) => T | null, slug?: string): Promise<T[]> {
+  const env = readEnv();
+  const rows: T[] = [];
   let cursor: string | undefined;
   for (let page = 0; page < MAX_PAGES; page++) {
-    const json = await notionQuery(env, cursor);
+    const json = await notionQuery(env, cursor, slug);
     for (const raw of json.results as unknown[]) {
-      const row = parseRow(raw);
-      if (row) rows.push(row);
+      const row = parse(raw);
+      if (row !== null) rows.push(row);
     }
-    if (json.has_more === true && typeof json.next_cursor === "string") cursor = json.next_cursor;
-    else return rows;
+    if (json.has_more !== true) return rows;
+    if (typeof json.next_cursor !== "string" || !json.next_cursor || json.next_cursor === cursor) {
+      throw new NotionRegistryError("Missing or invalid Notion page cursor", "shape");
+    }
+    cursor = json.next_cursor;
   }
   throw new NotionRegistryError(`Registry exceeds ${MAX_PAGES * 100} rows`, "shape");
 }
@@ -258,7 +263,7 @@ export function buildProjects(rows: RegistryRow[]): Project[] {
  */
 const loadFromNotion = unstable_cache(
   async (): Promise<Project[]> => {
-    const projects = buildProjects(await fetchRegistryRows(readEnv()));
+    const projects = buildProjects(await readRegistryRows(parseRow));
     // An empty result almost always means a mis-shared integration or a wrong
     // database id, not "no projects"; refuse to cache it.
     if (projects.length === 0) {

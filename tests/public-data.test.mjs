@@ -286,7 +286,7 @@ function loadTs(rel, stubs) {
   return mod.exports;
 }
 const publicMod = loadTs("data/public-projects.ts", { "./public-projects.json": data });
-const projectsMod = loadTs("data/projects.ts", { "next/cache": { unstable_cache: (fn) => fn }, "@/data/public-projects": publicMod });
+const projectsMod = loadTs("data/projects.ts", { "server-only": {}, "next/cache": { unstable_cache: (fn) => fn }, "@/data/public-projects": publicMod });
 
 const PROJECT_KEYS = ["category", "description", "live", "repo", "status", "tags", "techStack", "title", "visibility", "zone"];
 const ALLOWED_TITLES = new Set(data.public.map((p) => p.name));
@@ -400,4 +400,36 @@ test("Notion data: archived and incomplete rows are ignored; only Slug and Statu
   assert.equal(projectsMod.parseRow(row("", "Live")), null);
   assert.deepEqual({ ...projectsMod.parseRow(row("jobhunter-gpt", "Live")) }, { slug: "jobhunter-gpt", status: "Live" });
   assert.match(read("data/projects.ts"), /const PROP = \{\s*slug: "Slug",\s*status: "Status",\s*\} as const;/);
+});
+
+test("owner portfolio reads only after owner authentication and excludes invalid rows", async () => {
+  let authenticated = false;
+  let reads = 0;
+  const ownerMod = loadTs("lib/owner-portfolio.ts", {
+    "server-only": {},
+    "@/lib/owner-auth": { hasOwnerSession: async () => authenticated },
+    "@/data/projects": {
+      ...projectsMod,
+      readRegistryRows: async (parse, slug) => {
+        reads++;
+        assert.equal(slug, "owner-demo");
+        return [
+          { properties: { Slug: { rich_text: [{ plain_text: "owner-demo" }] },
+            "Project Name": { title: [{ plain_text: "Synthetic owner entry" }] },
+            "Next Action": { rich_text: [{ plain_text: "Review the evidence" }] },
+            "Repository URL": { url: "https://example.com/untrusted" } } },
+          { properties: { "Project Name": { title: [{ plain_text: "Incomplete" }] } } },
+        ].map(parse).filter(Boolean);
+      },
+    },
+  });
+
+  assert.deepEqual(await ownerMod.loadOwnerPortfolio("owner-demo"), { state: "signed-out" });
+  assert.equal(reads, 0);
+  authenticated = true;
+  const result = await ownerMod.loadOwnerPortfolio("owner-demo");
+  assert.equal(reads, 1);
+  assert.equal(result.state, "ready");
+  assert.deepEqual(result.projects.map(({ name, action, repository }) => [name, action, repository]),
+    [["Synthetic owner entry", "Review the evidence", undefined]]);
 });

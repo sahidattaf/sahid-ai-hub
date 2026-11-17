@@ -113,3 +113,18 @@ No API keys are committed to this repository. All secrets go in `.env.local` onl
 
 - GitHub: [github.com/sahidattaf](https://github.com/sahidattaf)
 - Email: [sahidattaf@gmail.com](mailto:sahidattaf@gmail.com)
+
+## Owner portfolio
+
+The owner dashboard is available at `/owner`. Configure the GitHub OAuth app
+for the intended environment and register `/api/auth/callback/github` on that
+environment's origin. Set the server-side variables in `.env.example`, including
+the authorized owner's numeric GitHub account ID. Generate a fresh authentication
+secret for each environment. Use a Notion integration with read access to the
+Portfolio Registry and configure the registry database ID.
+
+Start with `/owner?project=sahid-ai-hub`. After signing in as the owner, compare
+the record with Notion, then open the full portfolio. From a separate signed-out
+session, confirm that `/owner` displays the sign-in state and the public registry
+displays only the approved public entries. The owner dashboard loads registry data
+on demand and skips rows without a project slug.

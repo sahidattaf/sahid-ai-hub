@@ -93,6 +93,7 @@
       "assetType": "Infrastructure",
       "status": "Live",
       "description": "Portfolio site and technical dashboard connecting projects, repositories and deployments.",
+      "websiteUrl": "https://sahid-ai-hub.vercel.app",
       "githubUrl": "https://github.com/sahidattaf/sahid-ai-hub",
       "category": "Portfolio Infrastructure",
       "stack": ["Next.js 16", "TypeScript", "Tailwind CSS v4", "Vercel"],
