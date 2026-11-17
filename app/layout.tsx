@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | Sahid AI Hub",
   },
   description:
-    "The public front door to Sahid Attaf's AI projects, live apps, repositories, hospitality systems, real estate intelligence, and proof-of-work prototypes.",
+    "The public front door to Sahid Attaf's AI projects, live apps, repositories, hospitality systems, and proof-of-work prototypes.",
   openGraph: {
     title: "Sahid AI Hub | AI command center",
     description:
