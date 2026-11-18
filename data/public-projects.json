@@ -123,17 +123,5 @@
       "stack": ["GitHub"],
       "tags": ["R&D", "Creative AI"]
     }
-  ],
-  "namesOnly": [
-    { "id": "hospitality-os", "name": "Hospitality OS", "zone": "Hospitality", "assetType": "Product" },
-    { "id": "private-client-project", "name": "Private client project", "zone": "Undisclosed", "assetType": "Client" },
-    { "id": "kai-korsou-waterfront", "name": "Kai Kòrsou Waterfront", "zone": "Real Estate / Kai Korsou", "assetType": "Development" },
-    { "id": "kai-korsou-command-center", "name": "Kai Kòrsou Command Center", "zone": "Real Estate / Kai Korsou", "assetType": "Infrastructure" },
-    { "id": "piska-ecosystem", "name": "PISKA Ecosystem", "zone": "Real Estate / Kai Korsou", "assetType": "Infrastructure" },
-    { "id": "piskadera-marketplace", "name": "Piskadera Marketplace", "zone": "Real Estate / Kai Korsou", "assetType": "Product" },
-    { "id": "pietermaai-business-hub", "name": "Pietermaai Business Hub", "zone": "Real Estate / Kai Korsou", "assetType": "Development" },
-    { "id": "adminflow-global-os", "name": "AdminFlow Global OS", "zone": "AI Business", "assetType": "Product" },
-    { "id": "sahid-botanica", "name": "SĀHID BOTANICA", "zone": "Incubator & Proof", "assetType": "Venture" },
-    { "id": "sahid-ai-operating-system", "name": "Sahid AI Operating System", "zone": "Infrastructure", "assetType": "Infrastructure" }
   ]
 }

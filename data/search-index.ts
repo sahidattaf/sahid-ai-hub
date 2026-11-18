@@ -4,7 +4,7 @@ export type SearchCategory =
   | "Modules"
   | "GitHub"
   | "Vercel"
-  | "Revenue"
+  | "Services"
   | "Roadmap"
   | "AI Agents";
 
@@ -46,10 +46,10 @@ export const SEARCH_INDEX: SearchItem[] = [
     id: "page-registry",
     title: "Registry",
     category: "Pages",
-    description: "Structured project registry with health scores and metadata",
+    description: "Public project registry by zone",
     url: "/registry",
     icon: "📋",
-    keywords: ["registry", "projects", "list", "health", "status"],
+    keywords: ["registry", "projects", "list", "status"],
   },
   {
     id: "page-github",
@@ -82,12 +82,12 @@ export const SEARCH_INDEX: SearchItem[] = [
   },
   {
     id: "page-revenue",
-    title: "Revenue",
+    title: "Services",
     category: "Pages",
-    description: "Revenue streams, projections, and financial intelligence",
+    description: "AI services offered",
     url: "/revenue",
     icon: "💰",
-    keywords: ["revenue", "money", "income", "finance", "mrr", "arr", "saas"],
+    keywords: ["services", "offers", "consulting"],
     favorite: true,
   },
   {
@@ -113,10 +113,10 @@ export const SEARCH_INDEX: SearchItem[] = [
     id: "page-integrations",
     title: "Integrations",
     category: "Pages",
-    description: "API integrations readiness and connection status map",
+    description: "Platforms used by the hub and their status",
     url: "/integrations",
     icon: "🔌",
-    keywords: ["integrations", "api", "connections", "webhooks", "apis"],
+    keywords: ["integrations", "platforms", "status"],
   },
   {
     id: "page-about",
@@ -156,33 +156,6 @@ export const SEARCH_INDEX: SearchItem[] = [
     url: "/projects/bossa-ai-os",
     icon: "🏨",
     keywords: ["bossa", "ai", "os", "hospitality", "menu", "management", "automation"],
-  },
-  {
-    id: "proj-hospitality-os",
-    title: "Hospitality OS",
-    category: "Projects",
-    description: "Listed by name only; details are not public",
-    url: "/projects",
-    icon: "🏩",
-    keywords: ["hospitality", "os"],
-  },
-  {
-    id: "proj-kai-korsou",
-    title: "Kai Kòrsou Command Center",
-    category: "Projects",
-    description: "Listed by name only; details are not public",
-    url: "/projects",
-    icon: "🏝️",
-    keywords: ["kai", "korsou", "command", "center"],
-  },
-  {
-    id: "proj-piskadera",
-    title: "Piskadera Marketplace",
-    category: "Projects",
-    description: "Listed by name only; details are not public",
-    url: "/projects",
-    icon: "🐟",
-    keywords: ["piskadera", "marketplace"],
   },
   {
     id: "proj-gpt-os",
@@ -235,10 +208,10 @@ export const SEARCH_INDEX: SearchItem[] = [
     id: "mod-analytics",
     title: "Analytics",
     category: "Modules",
-    description: "Cross-platform traffic, deployment frequency, and revenue trends",
+    description: "Cross-platform traffic and deployment frequency",
     url: "/integrations",
     icon: "📈",
-    keywords: ["analytics", "traffic", "trends", "metrics", "data"],
+    keywords: ["analytics", "traffic", "metrics", "data"],
   },
   {
     id: "mod-hospitality",
@@ -250,22 +223,13 @@ export const SEARCH_INDEX: SearchItem[] = [
     keywords: ["hospitality", "hotel", "restaurant", "management", "staff"],
   },
   {
-    id: "mod-real-estate",
-    title: "Real Estate Module",
-    category: "Modules",
-    description: "Curacao property intelligence and Kai Kòrsou marketplace",
-    url: "/projects",
-    icon: "🏘️",
-    keywords: ["real", "estate", "property", "curacao", "listings", "market"],
-  },
-  {
     id: "mod-knowledge",
     title: "Knowledge Base",
     category: "Modules",
-    description: "Searchable knowledge graph — project notes, decisions, and references",
+    description: "Searchable reference material and brand guides",
     url: "/command-center",
     icon: "🧠",
-    keywords: ["knowledge", "notes", "decisions", "reference", "search", "graph"],
+    keywords: ["knowledge", "reference", "search", "graph"],
   },
   {
     id: "mod-automation",
@@ -275,33 +239,6 @@ export const SEARCH_INDEX: SearchItem[] = [
     url: "/command-center",
     icon: "⚡",
     keywords: ["automation", "workflows", "triggers", "agents", "events"],
-  },
-  {
-    id: "mod-crm",
-    title: "CRM",
-    category: "Modules",
-    description: "Customer and prospect relationship management across all projects",
-    url: "/command-center",
-    icon: "👥",
-    keywords: ["crm", "customers", "prospects", "contacts", "deals", "relationships"],
-  },
-  {
-    id: "mod-documents",
-    title: "Documents",
-    category: "Modules",
-    description: "Contracts, SOPs, brand guidelines, and structured reference documents",
-    url: "/command-center",
-    icon: "📄",
-    keywords: ["documents", "contracts", "sop", "brand", "guidelines", "reference"],
-  },
-  {
-    id: "mod-notion",
-    title: "Notion Workspace",
-    category: "Modules",
-    description: "Connected Notion workspace — documents, SOPs, and brand guides",
-    url: "/integrations",
-    icon: "📝",
-    keywords: ["notion", "documents", "sop", "notes", "workspace", "wiki"],
   },
   {
     id: "mod-claude-design",
@@ -376,30 +313,21 @@ export const SEARCH_INDEX: SearchItem[] = [
   // === REVENUE ===
   {
     id: "rev-streams",
-    title: "Revenue Streams",
-    category: "Revenue",
-    description: "Active and projected revenue across all business units",
+    title: "Services",
+    category: "Services",
+    description: "AI services offered",
     url: "/revenue",
     icon: "💰",
-    keywords: ["revenue", "streams", "mrr", "arr", "income", "money"],
-  },
-  {
-    id: "rev-saas",
-    title: "SaaS Revenue",
-    category: "Revenue",
-    description: "JobHunterGPT, BOSSA AI OS, AI Marketing Tools subscriptions",
-    url: "/revenue",
-    icon: "📊",
-    keywords: ["saas", "subscriptions", "recurring", "revenue", "mrr"],
+    keywords: ["services", "offers", "ai"],
   },
   {
     id: "rev-consulting",
-    title: "Consulting Revenue",
-    category: "Revenue",
-    description: "Client projects and AI consulting engagements",
+    title: "AI Consulting",
+    category: "Services",
+    description: "AI consulting and build services",
     url: "/revenue",
     icon: "💼",
-    keywords: ["consulting", "clients", "projects", "services", "revenue"],
+    keywords: ["consulting", "services", "build"],
   },
 
   // === ROADMAP ===
@@ -438,7 +366,7 @@ export const CATEGORY_ICONS: Record<string, string> = {
   Modules: "🧩",
   GitHub: "🐙",
   Vercel: "▲",
-  Revenue: "💰",
+  Services: "💰",
   Roadmap: "🗺️",
   "AI Agents": "🤖",
 };
@@ -450,7 +378,7 @@ export const CATEGORY_ORDER: string[] = [
   "Modules",
   "GitHub",
   "Vercel",
-  "Revenue",
+  "Services",
   "Roadmap",
 ];
 

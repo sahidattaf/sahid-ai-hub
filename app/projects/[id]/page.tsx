@@ -5,8 +5,7 @@ import ProjectDetailHeader from "@/components/project-detail-header";
 import ProjectLinkGrid from "@/components/project-link-grid";
 import ProjectModuleGrid from "@/components/project-module-grid";
 
-// Only public projects get a detail page. Any other id (including names-only
-// projects) is a 404, so nothing beyond the name is ever published for them.
+// Only public projects get a detail page. Any other id is a 404.
 export const dynamicParams = false;
 
 export function generateStaticParams() {

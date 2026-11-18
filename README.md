@@ -3,7 +3,7 @@
 
 AI Operating System dashboard and multi-page command center for everything Sahid Attaf builds with AI.
 
-Ten projects. Five build zones. Seven revenue streams. One operating system. All proof is in production.
+Public projects, build zones and services in one operating system. All proof is in production.
 
 ## Sprint History
 
@@ -25,12 +25,12 @@ Ten projects. Five build zones. Seven revenue streams. One operating system. All
 
 | Route | Description |
 | --- | --- |
-| `/` | Executive overview — hero, stats, OS dashboard, project preview, revenue and roadmap summaries |
-| `/registry` | Public project registry — zone-grouped, with stats, stack and links; non-public projects are listed by name only |
+| `/` | Executive overview — hero, stats, OS dashboard, project preview, services and roadmap summaries |
+| `/registry` | Public project registry — zone-grouped, with stats, stack and links; non-public projects are not listed |
 | `/projects` | All projects grouped by zone — sourced from the public project data |
 | `/live-apps` | Live Vercel deployments with tech stacks and direct links — sourced from the public project data |
 | `/command-center` | Eight-tool active toolchain grouped by category |
-| `/revenue` | Seven revenue streams with audience, income type, and how-it-earns breakdown |
+| `/revenue` | Summary of the services offered (no pricing or income details) |
 | `/roadmap` | Five-phase progression from public launch to client portal |
 | `/about` | Sahid Attaf — background, focus areas, build categories, and principles |
 | `/github` | Static list of public repositories, built from the public project data |
@@ -47,7 +47,7 @@ app/
   projects/page.tsx     — All projects grouped by zone
   live-apps/page.tsx    — Vercel deployments with tech stacks
   command-center/page.tsx — Active toolchain by category
-  revenue/page.tsx      — Revenue streams with income breakdown
+  revenue/page.tsx      — Services summary
   roadmap/page.tsx      — Five-phase build progression
   about/page.tsx        — Builder background and principles
 components/
@@ -71,9 +71,9 @@ lib/
   github.ts             — GitHub REST API fetch functions, types, utilities
   vercel.ts             — Vercel REST API fetch functions, types, state helpers
 data/
-  public-projects.json / public-projects.ts — Public-only project data (names-only for non-public projects). No internal fields.
+  public-projects.json / public-projects.ts — Public-only project data (the allowlist). Non-public projects and internal fields are not stored.
   projects.ts           — Legacy project data (used by homepage project-card)
-  command-center.ts     — OS dashboard, toolchain, revenue, roadmap data
+  command-center.ts     — toolchain, services, roadmap data
   integrations.ts       — Eight API integration specs
 ```
 

@@ -1,10 +1,3 @@
-export interface OSDashboardCard {
-  title: string;
-  count: string;
-  description: string;
-  accent: "cyan" | "gold";
-}
-
 export type ToolCategory = "AI" | "Design" | "Dev" | "Ops";
 
 export interface Tool {
@@ -14,14 +7,10 @@ export interface Tool {
   usedFor: string[];
 }
 
-export type IncomeType = "Project" | "Retainer" | "Product" | "Service";
-
-export interface RevenueStream {
+/** Public service summary: what is offered, nothing about pricing, clients or income. */
+export interface ServiceOffer {
   name: string;
   description: string;
-  audience: string;
-  incomeType: IncomeType;
-  howItEarns: string;
 }
 
 export interface RoadmapPhase {
@@ -31,63 +20,6 @@ export interface RoadmapPhase {
   status: "Complete" | "Active" | "Planned";
   deliverables: string[];
 }
-
-export interface Zone {
-  name: string;
-  description: string;
-  count: string;
-}
-
-export const OS_DASHBOARD: OSDashboardCard[] = [
-  {
-    title: "Live Apps",
-    count: "6",
-    description: "Deployed, publicly accessible Next.js applications on Vercel.",
-    accent: "cyan",
-  },
-  {
-    title: "GitHub Repositories",
-    count: "6",
-    description: "Open-source repositories under sahidattaf, all public.",
-    accent: "cyan",
-  },
-  {
-    title: "Vercel Deployments",
-    count: "6",
-    description: "Production deployments with automated CI/CD pipelines.",
-    accent: "cyan",
-  },
-  {
-    title: "Notion Command Centers",
-    count: "3",
-    description: "Internal planning hubs, operational dashboards, and strategy maps.",
-    accent: "gold",
-  },
-  {
-    title: "Claude Design Systems",
-    count: "2",
-    description: "UI design systems and component libraries built with Claude.",
-    accent: "gold",
-  },
-  {
-    title: "Spark Prototypes",
-    count: "4",
-    description: "Rapid prototypes and validated concept builds in Spark.",
-    accent: "gold",
-  },
-  {
-    title: "AI Agents / GPTs",
-    count: "3",
-    description: "Custom GPT systems and automation agents deployed for specific domains.",
-    accent: "cyan",
-  },
-  {
-    title: "Revenue Engine",
-    count: "7",
-    description: "Active revenue streams and packaged commercial offers.",
-    accent: "gold",
-  },
-];
 
 export const TOOLCHAIN: Tool[] = [
   {
@@ -140,70 +72,13 @@ export const TOOLCHAIN: Tool[] = [
   },
 ];
 
-export const REVENUE_STREAMS: RevenueStream[] = [
-  {
-    name: "AI Websites",
-    description:
-      "Custom Next.js applications built with embedded AI features, from brand sites to full platforms.",
-    audience: "Businesses, restaurants, brands, and startups that need a web presence powered by AI.",
-    incomeType: "Project",
-    howItEarns:
-      "Fixed project fee scoped to the build. Includes design, development, and deployment. Maintenance sold separately.",
-  },
-  {
-    name: "Custom GPTs",
-    description:
-      "Tailored GPT systems designed for specific business workflows, support, and automation.",
-    audience: "Teams and entrepreneurs who need AI handling a specific function — support, sales, operations.",
-    incomeType: "Project",
-    howItEarns:
-      "Per-build fee for system design, prompt engineering, testing, and delivery. Optional retainer for iteration.",
-  },
-  {
-    name: "Monthly AI Support",
-    description:
-      "Ongoing retainer for AI system maintenance, iteration, and performance optimization.",
-    audience: "Existing clients with live AI systems who need continuous improvement and adaptation.",
-    incomeType: "Retainer",
-    howItEarns:
-      "Monthly flat fee covering a set number of hours. Covers updates, monitoring, new prompt versions, and small features.",
-  },
-  {
-    name: "Hospitality AI OS",
-    description:
-      "Full AI operating system package for food and beverage businesses — menus, ops, and analytics.",
-    audience: "Restaurant owners, cafe operators, and hospitality groups looking for AI-driven operations.",
-    incomeType: "Service",
-    howItEarns:
-      "Packaged service fee covering system build, staff training, and a 90-day support window. Renewal sold as retainer.",
-  },
-  {
-    name: "Real Estate AI Intelligence",
-    description:
-      "Market analysis tools, property intelligence dashboards, and buyer/seller automation.",
-    audience: "Property developers, real estate agents, and investment groups in emerging markets.",
-    incomeType: "Service",
-    howItEarns:
-      "Project fee for dashboard build plus optional subscription for data refresh and ongoing market intelligence.",
-  },
-  {
-    name: "Training / Workshops",
-    description:
-      "AI literacy programs, implementation workshops, and team enablement sessions.",
-    audience: "Organizations, teams, and entrepreneurs who want to understand and apply AI tools.",
-    incomeType: "Service",
-    howItEarns:
-      "Per-session or per-head pricing. Half-day, full-day, and multi-week program formats available.",
-  },
-  {
-    name: "Templates / Digital Products",
-    description:
-      "Packaged AI frameworks, starter kits, and prompt libraries for self-serve implementation.",
-    audience: "Builders, solopreneurs, and small teams who want to move fast with pre-built AI systems.",
-    incomeType: "Product",
-    howItEarns:
-      "One-time purchase per product. Sold as digital downloads. Zero ongoing support required from the builder.",
-  },
+export const SERVICES: ServiceOffer[] = [
+  { name: "AI Websites", description: "Next.js applications with embedded AI features, from brand sites to full platforms." },
+  { name: "Custom GPTs", description: "GPT systems designed for specific business workflows, support and automation." },
+  { name: "AI Support", description: "Ongoing maintenance, iteration and optimization of AI systems." },
+  { name: "Hospitality AI", description: "AI systems for food and beverage businesses: menus, operations and analytics." },
+  { name: "Training and Workshops", description: "AI literacy programs, implementation workshops and team enablement." },
+  { name: "Digital Products", description: "Packaged AI frameworks, starter kits and prompt libraries." },
 ];
 
 export const ROADMAP: RoadmapPhase[] = [
@@ -267,49 +142,16 @@ export const ROADMAP: RoadmapPhase[] = [
   },
   {
     phase: "Phase 5",
-    title: "Client / Investor Portal",
+    title: "Authenticated Portal",
     description:
-      "Authenticated workspace for active clients and investors. Private dashboards, project tracking, and direct communication layer.",
+      "Authenticated area for signed-in users: private dashboards, project tracking, and a messaging layer.",
     status: "Planned",
     deliverables: [
-      "Auth system with Supabase",
-      "Per-client dashboard",
-      "Private project views",
+      "Authentication",
+      "Personal dashboard",
+      "Private views",
       "File and document access",
       "Direct message layer",
     ],
-  },
-];
-
-export const ZONES: Zone[] = [
-  {
-    name: "Proof of Work",
-    description:
-      "Publicly deployed applications and repositories that demonstrate real capability. Every item here is live, functional, and verifiable.",
-    count: "6",
-  },
-  {
-    name: "Hospitality",
-    description:
-      "AI systems built for food, beverage, and guest experience — brand sites, operating systems, and intelligence layers for the hospitality industry.",
-    count: "2",
-  },
-  {
-    name: "Real Estate / Kai Korsou",
-    description:
-      "Property intelligence tools, local commerce infrastructure, and digital ecosystem builds for the Curacao market.",
-    count: "1",
-  },
-  {
-    name: "GPT Innovation / AI Services",
-    description:
-      "Custom GPT systems, AI marketing platforms, and multi-app AI ecosystems offered as commercial services.",
-    count: "2",
-  },
-  {
-    name: "Infrastructure / Archive",
-    description:
-      "Platform engineering, monorepo architecture, deployment infrastructure, and foundational systems that power every other zone.",
-    count: "1",
   },
 ];

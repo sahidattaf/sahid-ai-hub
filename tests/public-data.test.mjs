@@ -1,6 +1,7 @@
 // Offline tests for the public-data boundary. This repository is PUBLIC, so
 // these tests check what is committed, not what the server hides. Plain
-// `node --test`: no TypeScript runtime, no network, no environment files.
+// `node --test`: no network, no environment files. data/projects.ts is loaded
+// by transpiling it in memory (TypeScript is a dev dependency).
 //
 // No client names, client identifiers or hashes of them appear in this file.
 // Optional leak scan: set LEAK_TERMS_FILE to a local file (outside the repo)
@@ -10,6 +11,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import ts from "typescript";
 
 const root = path.resolve(import.meta.dirname, "..");
 const read = (rel) => fs.readFileSync(path.join(root, rel), "utf8");
@@ -18,7 +20,6 @@ const read = (rel) => fs.readFileSync(path.join(root, rel), "utf8");
 
 const PUBLIC_KEYS = ["id", "name", "zone", "assetType", "status", "description", "websiteUrl", "githubUrl", "category", "stack", "tags"];
 const REQUIRED_PUBLIC_KEYS = ["id", "name", "zone", "assetType", "status", "description", "category", "stack", "tags"];
-const NAME_ONLY_KEYS = ["id", "name", "zone", "assetType"];
 const FORBIDDEN_FIELDS = [
   "ownerGate", "nextDecision", "nextAction", "notionUrl", "vercelProject", "relatedRepositories", "priority", "evidenceStatus",
   "commercialStatus", "revenuePotential", "operatingStatus", "visibility", "parentProject", "lastReviewed", "owner", "portfolioStream",
@@ -30,18 +31,19 @@ const APPROVED_REPOS = new Set(
     "digital-korsou-boske-ai", "reflexhon-global", "sahid-ai-hub", "jobhunter-gpt", "dreamscape",
   ].map((r) => r.toLowerCase()),
 );
-const CLIENT_PLACEHOLDER = { id: "private-client-project", name: "Private client project", zone: "Undisclosed", assetType: "Client" };
 
 function zonesFromSource() {
   const m = read("data/public-projects.ts").match(/ZONE_ORDER = \[([^\]]+)\]/);
   assert.ok(m, "ZONE_ORDER not found");
-  return [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]).concat(m[1].includes("UNDISCLOSED_ZONE") ? ["Undisclosed"] : []);
+  return [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]);
 }
 
 /** Returns a list of violations; empty means the data is publishable. */
 function checkPublicData(data, zones) {
   const v = [];
   const ids = new Set();
+  // Non-public projects are not listed at all, not even by name.
+  if (Object.keys(data).some((k) => k !== "public")) v.push('data may only have a "public" list (no namesOnly or other lists)');
   for (const p of data.public ?? []) {
     for (const k of Object.keys(p)) if (!PUBLIC_KEYS.includes(k)) v.push(`public ${p.id}: key "${k}" is not on the allowlist`);
     for (const k of REQUIRED_PUBLIC_KEYS) if (p[k] === undefined) v.push(`public ${p.id}: missing "${k}"`);
@@ -55,58 +57,43 @@ function checkPublicData(data, zones) {
     if (ids.has(p.id)) v.push(`duplicate id ${p.id}`);
     ids.add(p.id);
   }
-  for (const p of data.namesOnly ?? []) {
-    const keys = Object.keys(p).sort().join(",");
-    if (keys !== [...NAME_ONLY_KEYS].sort().join(",")) v.push(`namesOnly ${p.id}: must have exactly ${NAME_ONLY_KEYS.join(", ")}`);
-    if (!zones.includes(p.zone)) v.push(`namesOnly ${p.id}: unknown zone`);
-    if (ids.has(p.id)) v.push(`duplicate id ${p.id}`);
-    ids.add(p.id);
-  }
   const text = JSON.stringify(data);
   for (const f of FORBIDDEN_FIELDS) if (new RegExp(`"${f}"\\s*:`).test(text)) v.push(`forbidden field "${f}" present`);
   if (/notion\.(so|com)|\b[0-9a-f]{32}\b/i.test(text)) v.push("Notion URL or 32-character id present");
-  const clients = (data.namesOnly ?? []).filter((p) => p.assetType === "Client");
-  for (const c of clients) if (JSON.stringify(c) !== JSON.stringify(CLIENT_PLACEHOLDER)) v.push("client entry must be exactly the neutral placeholder");
   return v;
 }
 
 // ---------- the checker itself, on synthetic data ----------
 
-const ZONES = ["Alpha", "Beta", "Undisclosed"];
+const ZONES = ["Alpha", "Beta"];
 const goodPublic = { id: "demo-app", name: "Demo App", zone: "Alpha", assetType: "Product", status: "Live", description: "A synthetic demo.", websiteUrl: "https://demo.example.app/", githubUrl: "https://github.com/sahidattaf/sahid-ai-hub", category: "Demo", stack: ["X"], tags: ["t"] };
-const goodNames = [{ id: "secret-thing", name: "Secret Thing", zone: "Beta", assetType: "Venture" }, { ...CLIENT_PLACEHOLDER }];
 
 test("checker: clean synthetic data passes", () => {
-  assert.deepEqual(checkPublicData({ public: [goodPublic], namesOnly: goodNames }, ZONES), []);
+  assert.deepEqual(checkPublicData({ public: [goodPublic] }, ZONES), []);
 });
 
 test("checker: internal fields on a public entry are rejected", () => {
   for (const field of ["ownerGate", "nextDecision", "nextAction", "notionUrl", "vercelProject", "priority", "evidenceStatus", "relatedRepositories"]) {
-    const v = checkPublicData({ public: [{ ...goodPublic, [field]: "x" }], namesOnly: [] }, ZONES);
+    const v = checkPublicData({ public: [{ ...goodPublic, [field]: "x" }] }, ZONES);
     assert.ok(v.some((m) => m.includes(field)), `${field} should be rejected`);
   }
 });
 
-test("checker: names-only entries cannot carry descriptions or links", () => {
-  for (const extra of [{ description: "d" }, { githubUrl: "https://github.com/sahidattaf/x" }, { notionUrl: "https://www.notion.so/x" }, { status: "Live" }]) {
-    const v = checkPublicData({ public: [], namesOnly: [{ id: "a", name: "A", zone: "Beta", assetType: "Venture", ...extra }] }, ZONES);
-    assert.ok(v.length > 0, JSON.stringify(extra));
-  }
+test("checker: a namesOnly list (or any other list) is rejected, so private names cannot come back", () => {
+  const v = checkPublicData({ public: [], namesOnly: [{ id: "a", name: "A", zone: "Beta", assetType: "Venture" }] }, ZONES);
+  assert.ok(v.some((m) => m.includes("namesOnly")));
+  assert.ok(checkPublicData({ public: [], hidden: [] }, ZONES).length);
 });
 
 test("checker: Notion URLs, ids, unapproved repositories and unknown zones are rejected", () => {
-  assert.ok(checkPublicData({ public: [{ ...goodPublic, description: "see https://app.notion.com/p/abc" }], namesOnly: [] }, ZONES).length);
-  assert.ok(checkPublicData({ public: [{ ...goodPublic, description: "id 0123456789abcdef0123456789abcdef" }], namesOnly: [] }, ZONES).length);
-  assert.ok(checkPublicData({ public: [{ ...goodPublic, githubUrl: "https://github.com/sahidattaf/some-private-repo" }], namesOnly: [] }, ZONES).length);
-  assert.ok(checkPublicData({ public: [{ ...goodPublic, zone: "Nowhere" }], namesOnly: [] }, ZONES).length);
+  assert.ok(checkPublicData({ public: [{ ...goodPublic, description: "see https://app.notion.com/p/abc" }] }, ZONES).length);
+  assert.ok(checkPublicData({ public: [{ ...goodPublic, description: "id 0123456789abcdef0123456789abcdef" }] }, ZONES).length);
+  assert.ok(checkPublicData({ public: [{ ...goodPublic, githubUrl: "https://github.com/sahidattaf/some-private-repo" }] }, ZONES).length);
+  assert.ok(checkPublicData({ public: [{ ...goodPublic, zone: "Nowhere" }] }, ZONES).length);
 });
 
-test("checker: a client-type project is never a public entry, and the client label is the neutral placeholder only", () => {
-  assert.ok(checkPublicData({ public: [{ ...goodPublic, assetType: "Client" }], namesOnly: [] }, ZONES).length);
-  const disguised = { ...CLIENT_PLACEHOLDER, name: "Some Real Client Ltd" };
-  assert.ok(checkPublicData({ public: [], namesOnly: [disguised] }, ZONES).length);
-  const withZone = { ...CLIENT_PLACEHOLDER, zone: "Alpha" };
-  assert.ok(checkPublicData({ public: [], namesOnly: [withZone] }, ZONES).length, "placeholder keeps the Undisclosed zone");
+test("checker: a client-type project is never a public entry", () => {
+  assert.ok(checkPublicData({ public: [{ ...goodPublic, assetType: "Client" }] }, ZONES).length);
 });
 
 // ---------- the real public data ----------
@@ -117,17 +104,11 @@ test("real data passes the allowlist checker", () => {
   assert.deepEqual(checkPublicData(data, zonesFromSource()), []);
 });
 
-test("every project name is present: public entries plus names-only entries", () => {
+test("real data has only the public list and no names-only or client entries", () => {
+  assert.deepEqual(Object.keys(data), ["public"]);
   assert.equal(data.public.length, 10);
-  assert.equal(data.namesOnly.length, 10);
-  assert.ok(data.namesOnly.some((p) => p.name === "Piskadera Marketplace"), "Piskadera's name stays public (name only)");
-  for (const p of [...data.public, ...data.namesOnly]) assert.ok(p.name.length > 0);
-});
-
-test("the client entry is the neutral placeholder with no identifying slug, links, description or zone", () => {
-  const clients = [...data.public, ...data.namesOnly].filter((p) => p.assetType === "Client");
-  assert.equal(clients.length, 1);
-  assert.deepEqual(clients[0], CLIENT_PLACEHOLDER);
+  assert.equal(data.public.filter((p) => p.assetType === "Client").length, 0);
+  assert.equal("namesOnly" in data, false);
 });
 
 // ---------- the published tree ----------
@@ -138,8 +119,14 @@ function publishedFiles() {
   return out.split("\n").filter((f) => f && TEXT_EXT.test(f) && f !== "package-lock.json" && fs.existsSync(path.join(root, f)));
 }
 const SOURCE = () => publishedFiles().filter((f) => !f.startsWith("tests/"));
-// Existing, unrelated uses of the word "nextAction" (module roadmap items, GitHub health hints), not project registry data.
-const NEXT_ACTION_OK = new Set(["data/executive-modules.ts"]);
+// nextAction (internal to-do text) must not be published anywhere.
+const NEXT_ACTION_OK = new Set([]);
+
+test("namesOnly no longer exists anywhere in the published source", () => {
+  const hits = SOURCE().filter((f) => /namesOnly|getNameOnlyProjects|NameOnlyProject|private-project-names|UNDISCLOSED_ZONE/.test(read(f)));
+  assert.deepEqual(hits, []);
+  assert.equal(fs.existsSync(path.join(root, "components/private-project-names.tsx")), false);
+});
 
 test("published source contains no internal registry fields", () => {
   const re = /ownerGate|nextDecision|notionUrl|evidenceStatus|commercialStatus|revenuePotential|operatingStatus|relatedRepositories|portfolioStream|lastReviewed|parentProject/;
@@ -147,13 +134,14 @@ test("published source contains no internal registry fields", () => {
   assert.deepEqual(hits, []);
 });
 
-test("nextAction appears only in the known unrelated places", () => {
+test("nextAction does not appear in the published source", () => {
   const hits = SOURCE().filter((f) => /nextAction/.test(read(f)) && !NEXT_ACTION_OK.has(f));
   assert.deepEqual(hits, []);
 });
 
 test("published source contains no Notion page URLs or 32-character ids", () => {
-  const hits = SOURCE().filter((f) => /notion\.(so|com)\/|\b[0-9a-f]{32}\b/i.test(read(f)));
+  // api.notion.com (the server-side API host in data/projects.ts) is not a page URL.
+  const hits = SOURCE().filter((f) => /(?<!api\.)notion\.(so|com)\/|\b[0-9a-f]{32}\b/i.test(read(f)));
   assert.deepEqual(hits, []);
 });
 
@@ -165,12 +153,6 @@ test("every GitHub repository link in published source is an approved public rep
     }
   }
   assert.deepEqual(bad, []);
-});
-
-test("search index sends non-public projects to the list, not to a detail page that does not exist", () => {
-  const publicIds = new Set(data.public.map((p) => p.id));
-  const src = read("data/search-index.ts");
-  for (const m of src.matchAll(/url:\s*"\/projects\/([^"]+)"/g)) assert.ok(publicIds.has(m[1]), `search links to a non-public detail page: ${m[1]}`);
 });
 
 // ---------- routes ----------
@@ -188,6 +170,12 @@ test("project detail pages are generated for public projects only", () => {
   const src = read("app/projects/[id]/page.tsx");
   assert.match(src, /dynamicParams\s*=\s*false/);
   assert.match(src, /getPublicProjects\(\)\.map/);
+});
+
+test("homepage numbers and zones come from the public data, not hard-coded", () => {
+  const home = read("app/page.tsx");
+  assert.match(home, /getPublicStats\(\)/);
+  assert.doesNotMatch(home, /Six live applications|View all 6 projects|REVENUE_STREAMS|OS_DASHBOARD|\bZONES\b/);
 });
 
 // ---------- optional client-term scan (terms supplied locally, never committed) ----------
@@ -213,8 +201,9 @@ test("the public site makes no live GitHub or Vercel calls and reads no provider
   const hits = [];
   for (const f of SOURCE().filter((f) => /\.(ts|tsx|js|mjs)$/.test(f) && !f.startsWith("scripts/"))) {
     const text = read(f);
-    if (/process\.env\.(GITHUB_TOKEN|VERCEL_TOKEN|VERCEL_TEAM_ID|NOTION_TOKEN)/.test(text)) hits.push(`${f}: reads a provider token`);
-    if (/api\.github\.com|api\.vercel\.com|api\.notion\.com/.test(text)) hits.push(`${f}: calls a provider API`);
+    const notionOk = f === "data/projects.ts"; // the one server-side, allowlisted Notion reader
+    if (/process\.env\.(GITHUB_TOKEN|VERCEL_TOKEN|VERCEL_TEAM_ID)/.test(text) || (!notionOk && /process\.env\.NOTION_TOKEN/.test(text))) hits.push(`${f}: reads a provider token`);
+    if (/api\.github\.com|api\.vercel\.com/.test(text) || (!notionOk && /api\.notion\.com/.test(text))) hits.push(`${f}: calls a provider API`);
     if (/@\/(lib\/(github|vercel)|types\/github|hooks\/use-github|components\/(github|vercel))/.test(text)) hits.push(`${f}: imports live integration code`);
   }
   assert.deepEqual(hits, []);
@@ -235,40 +224,180 @@ const INTERNAL_WORDING = /\b(top 3|founder|parked|retained|reconcil\w*|evidence|
 
 test("public descriptions, tags and zone text contain no internal-decision wording", () => {
   const strings = [];
-  for (const p of [...data.public, ...data.namesOnly]) {
-    strings.push(p.name, p.description ?? "", ...(p.tags ?? []), ...(p.stack ?? []));
-  }
+  for (const p of data.public) strings.push(p.name, p.description ?? "", ...(p.tags ?? []), ...(p.stack ?? []));
   const zones = read("data/public-projects.ts").match(/ZONE_DESCRIPTIONS[^=]*=\s*\{([\s\S]*?)\n\};/);
   assert.ok(zones, "ZONE_DESCRIPTIONS not found");
   strings.push(...[...zones[1].matchAll(/:\s*"([^"]+)"/g)].map((m) => m[1]));
   const search = read("data/search-index.ts");
   strings.push(...[...search.matchAll(/category:\s*"Projects",\s*description:\s*"([^"]*)"/g)].map((m) => m[1]));
-  assert.ok(strings.length > 40, "too few strings were checked");
+  assert.ok(strings.length > 30, "too few strings were checked");
   assert.deepEqual(strings.filter((s) => INTERNAL_WORDING.test(s)), []);
 });
 
-// ---------- search index (command palette) ----------
+// ---------- search index (command palette, Ctrl+K) ----------
 
-const fold = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-
-test("search index: non-public projects are name-only with name-derived keywords; no unlisted projects", () => {
+test("search index: every project entry is a public project with a detail page; nothing is listed by name only", () => {
   const publicIds = new Set(data.public.map((p) => p.id));
-  const nameOnly = new Map(data.namesOnly.map((p) => [fold(p.name), p]));
   const src = read("data/search-index.ts");
-  const re = /id:\s*"(proj-[^"]+)",\s*title:\s*"([^"]+)",\s*category:\s*"Projects",\s*description:\s*"([^"]*)",\s*url:\s*"([^"]*)",\s*icon:\s*"[^"]*",\s*keywords:\s*\[([^\]]*)\]/g;
+  const re = /id:\s*"(proj-[^"]+)",\s*title:\s*"([^"]+)",\s*category:\s*"Projects",\s*description:\s*"([^"]*)",\s*url:\s*"([^"]*)"/g;
   let seen = 0;
   for (const m of src.matchAll(re)) {
     seen++;
-    const [, id, title, description, url, kw] = m;
+    const [, id, , description, url] = m;
     const detail = url.match(/^\/projects\/(.+)$/);
-    if (detail) {
-      assert.ok(publicIds.has(detail[1]), `${id}: links to a non-public detail page`);
-      continue;
-    }
-    assert.ok(nameOnly.has(fold(title)), `${id}: "${title}" is neither a public project nor a listed name-only project`);
-    assert.equal(description, "Listed by name only; details are not public", `${id}: non-public project must not have a description`);
-    const keywords = [...kw.matchAll(/"([^"]+)"/g)].map((k) => fold(k[1]));
-    for (const k of keywords) assert.ok(fold(title).includes(k), `${id}: keyword "${k}" is not part of the project name`);
+    assert.ok(detail, `${id}: project entries must link to a public detail page, not the list`);
+    assert.ok(publicIds.has(detail[1]), `${id}: links to a non-public detail page`);
+    assert.doesNotMatch(description, /name only|not public/i, `${id}: no name-only wording`);
   }
   assert.ok(seen >= 8, "search index project entries were not parsed");
+  assert.equal([...src.matchAll(/id:\s*"proj-/g)].length, seen, "every proj- entry must be parsed (and therefore public)");
+  assert.doesNotMatch(src, /Listed by name only|namesOnly/);
+});
+
+test("search index: every /projects/<id> link points to a public project", () => {
+  const publicIds = new Set(data.public.map((p) => p.id));
+  const src = read("data/search-index.ts");
+  for (const m of src.matchAll(/url:\s*"\/projects\/([^"]+)"/g)) assert.ok(publicIds.has(m[1]), `search links to a non-public detail page: ${m[1]}`);
+});
+
+test("search index: no internal revenue, client, CRM, document or Notion wording", () => {
+  const src = read("data/search-index.ts");
+  assert.doesNotMatch(src, /\b(mrr|arr|subscriptions|crm|contracts|decisions|health scores)\b/i);
+  assert.doesNotMatch(src, /notion/i);
+});
+
+test("public data modules carry no revenue model, env var names, safety rules or per-module next actions", () => {
+  assert.doesNotMatch(read("data/command-center.ts"), /howItEarns|incomeType|OS_DASHBOARD|ZONES\b/);
+  assert.doesNotMatch(read("data/integrations.ts"), /envVars|safetyRule|sprintTarget|futureData|_KEY|_TOKEN/);
+  assert.doesNotMatch(read("data/executive-modules.ts"), /nextAction|publicSafe/);
+  assert.doesNotMatch(read("app/integrations/page.tsx") + read("components/integration-card.tsx"), /envVars|safetyRule|Environment variables/);
+});
+
+// ---------- homepage fallback and Notion data (data/projects.ts) ----------
+
+function loadTs(rel, stubs) {
+  const out = ts.transpileModule(read(rel), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true } }).outputText;
+  const mod = { exports: {} };
+  const req = (id) => {
+    if (id in stubs) return stubs[id];
+    throw new Error(`${rel}: unexpected import "${id}"`);
+  };
+  new Function("require", "module", "exports", out)(req, mod, mod.exports);
+  return mod.exports;
+}
+const publicMod = loadTs("data/public-projects.ts", { "./public-projects.json": data });
+const projectsMod = loadTs("data/projects.ts", { "next/cache": { unstable_cache: (fn) => fn }, "@/data/public-projects": publicMod });
+
+const PROJECT_KEYS = ["category", "description", "live", "repo", "status", "tags", "techStack", "title", "visibility", "zone"];
+const ALLOWED_TITLES = new Set(data.public.map((p) => p.name));
+const ALLOWED_URLS = new Set(data.public.flatMap((p) => [p.websiteUrl, p.githubUrl].filter(Boolean)));
+
+function assertOnlyAllowlisted(projects) {
+  assert.equal(projects.length, data.public.length);
+  for (const p of projects) {
+    assert.deepEqual(Object.keys(p).filter((k) => p[k] !== undefined).sort(), PROJECT_KEYS.filter((k) => p[k] !== undefined).sort());
+    assert.ok(ALLOWED_TITLES.has(p.title), `title not on the allowlist: ${p.title}`);
+    assert.equal(p.visibility, "Public");
+    for (const u of [p.live, p.repo].filter(Boolean)) assert.ok(ALLOWED_URLS.has(u), `URL not on the allowlist: ${u}`);
+    const pub = data.public.find((x) => x.name === p.title);
+    assert.equal(p.description, pub.description);
+    assert.equal(p.zone, pub.zone);
+    assert.deepEqual(p.techStack, pub.stack);
+  }
+}
+
+test("homepage fallback is exactly the public allowlist (getPublicProjects), nothing more", () => {
+  const fb = projectsMod.getFallbackProjects();
+  assertOnlyAllowlisted(fb);
+  assert.deepEqual(new Set(fb.map((p) => p.title)), ALLOWED_TITLES);
+  assert.ok(fb.every((p) => ["Live", "Repo", "Prototype", "Planning"].includes(p.status)));
+  assert.match(read("data/projects.ts"), /getPublicProjects\(\)/);
+  assert.doesNotMatch(read("data/projects.ts"), /FALLBACK_PROJECTS|ai-marketing-tools-six|ai_-marketing-_tools-_agent/, "the old hard-coded snapshot must be gone");
+});
+
+const DB_ID = "0123456789abcdef0123456789abcdef";
+const row = (slug, status, extra = {}) => ({
+  archived: false,
+  properties: {
+    Slug: { rich_text: [{ plain_text: slug }] },
+    Status: { select: { name: status } },
+    "Project Name": { title: [{ plain_text: extra.name ?? "From Notion" }] },
+    "Live App URL": { url: extra.live ?? null },
+    "Repository URL": { url: extra.repo ?? null },
+    Priority: { select: { name: "P0 internal" } },
+    "Next Action": { rich_text: [{ plain_text: "INTERNAL-NEXT-ACTION" }] },
+  },
+});
+
+async function withNotion(responder, fn) {
+  const saved = { fetch: globalThis.fetch, token: process.env.NOTION_TOKEN, db: process.env.NOTION_DATABASE_ID, err: console.error };
+  process.env.NOTION_TOKEN = "test-token";
+  process.env.NOTION_DATABASE_ID = DB_ID;
+  console.error = () => {};
+  globalThis.fetch = async () => responder();
+  try {
+    return await fn();
+  } finally {
+    globalThis.fetch = saved.fetch;
+    console.error = saved.err;
+    if (saved.token === undefined) delete process.env.NOTION_TOKEN;
+    else process.env.NOTION_TOKEN = saved.token;
+    if (saved.db === undefined) delete process.env.NOTION_DATABASE_ID;
+    else process.env.NOTION_DATABASE_ID = saved.db;
+  }
+}
+const ok = (results) => new Response(JSON.stringify({ results, has_more: false }), { status: 200, headers: { "content-type": "application/json" } });
+
+test("Notion data: a synthetic project outside the allowlist cannot appear, and Notion cannot change displayed fields", async () => {
+  const rows = [
+    row("secret-client-project", "Live", { name: "SYNTHETIC-OUTSIDER", live: "https://outsider.example.com/", repo: "https://github.com/sahidattaf/outsider" }),
+    row("jobhunter-gpt", "Prototype", { name: "HIJACKED NAME", live: "https://evil.example.com/", repo: "https://github.com/sahidattaf/hijack" }),
+    row("bossa-ai-os", "Not-A-Status"),
+  ];
+  const result = await withNotion(() => ok(rows), () => projectsMod.getProjectsWithSource());
+  assert.equal(result.source, "notion");
+  assertOnlyAllowlisted(result.projects);
+  const text = JSON.stringify(result.projects);
+  for (const leak of ["SYNTHETIC-OUTSIDER", "outsider", "secret-client-project", "HIJACKED", "evil.example.com", "hijack", "INTERNAL-NEXT-ACTION", "P0 internal"]) {
+    assert.ok(!text.includes(leak), `leaked from Notion: ${leak}`);
+  }
+  const hunter = result.projects.find((p) => p.title === "JobHunterGPT");
+  assert.equal(hunter.status, "Prototype", "a valid Notion status is applied to an allowlisted project");
+  const bossa = result.projects.find((p) => p.title === "BOSSA AI OS");
+  assert.equal(bossa.status, data.public.find((p) => p.id === "bossa-ai-os").status, "an invalid Notion status is ignored");
+});
+
+test("Notion data: a registry with only non-allowlisted rows falls back to the allowlist", async () => {
+  const result = await withNotion(() => ok([row("secret-client-project", "Live"), row("another-outsider", "Repo")]), () => projectsMod.getProjectsWithSource());
+  assert.equal(result.source, "fallback");
+  assertOnlyAllowlisted(result.projects);
+  assert.ok(!JSON.stringify(result.projects).includes("outsider"));
+});
+
+test("Notion data: auth errors, bad responses and missing config fall back to the allowlist and never throw", async () => {
+  for (const responder of [() => new Response("{}", { status: 401 }), () => new Response("not json", { status: 200 }), () => new Response(JSON.stringify({ nope: 1 }), { status: 200 })]) {
+    const result = await withNotion(responder, () => projectsMod.getProjectsWithSource());
+    assert.equal(result.source, "fallback");
+    assertOnlyAllowlisted(result.projects);
+  }
+  const saved = { token: process.env.NOTION_TOKEN, db: process.env.NOTION_DATABASE_ID, err: console.error };
+  delete process.env.NOTION_TOKEN;
+  delete process.env.NOTION_DATABASE_ID;
+  console.error = () => {};
+  try {
+    const result = await projectsMod.getProjectsWithSource();
+    assert.equal(result.source, "fallback");
+    assertOnlyAllowlisted(result.projects);
+  } finally {
+    console.error = saved.err;
+    if (saved.token !== undefined) process.env.NOTION_TOKEN = saved.token;
+    if (saved.db !== undefined) process.env.NOTION_DATABASE_ID = saved.db;
+  }
+});
+
+test("Notion data: archived and incomplete rows are ignored; only Slug and Status are read", () => {
+  assert.equal(projectsMod.parseRow({ ...row("jobhunter-gpt", "Live"), archived: true }), null);
+  assert.equal(projectsMod.parseRow(row("", "Live")), null);
+  assert.deepEqual({ ...projectsMod.parseRow(row("jobhunter-gpt", "Live")) }, { slug: "jobhunter-gpt", status: "Live" });
+  assert.match(read("data/projects.ts"), /const PROP = \{\s*slug: "Slug",\s*status: "Status",\s*\} as const;/);
 });
